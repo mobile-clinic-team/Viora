@@ -1,27 +1,27 @@
 # Viora domain ownership and specialist review mapping.
 # A = Architecture, B = Security, C = Clinical, D = AI Safety.
 
-/.github/                                  doanquocviet30062006-cmd
-/.github/CODEOWNERS                        doanquocviet30062006-cmd
+/.github/                                  @doanquocviet30062006-cmd
+/.github/CODEOWNERS                        @doanquocviet30062006-cmd
 
-/apps/web/                                 doanquocviet30062006-cmd
-/apps/api/                                 doanquocviet30062006-cmd caoxuanthanh28206-prog
-/apps/workers/                             doanquocviet30062006-cmd
+/apps/web/                                 @doanquocviet30062006-cmd
+/apps/api/                                 @doanquocviet30062006-cmd @caoxuanthanh28206-prog
+/apps/workers/                             @doanquocviet30062006-cmd
 
-/libs/identity/                            doanquocviet30062006-cmd caoxuanthanh28206-prog
-/libs/tenant/                              doanquocviet30062006-cmd caoxuanthanh28206-prog
-/libs/audit/                               doanquocviet30062006-cmd caoxuanthanh28206-prog
-/libs/shared/                              doanquocviet30062006-cmd
+/libs/identity/                            @doanquocviet30062006-cmd @caoxuanthanh28206-prog
+/libs/tenant/                              @doanquocviet30062006-cmd @caoxuanthanh28206-prog
+/libs/audit/                               @doanquocviet30062006-cmd @caoxuanthanh28206-prog
+/libs/shared/                              @doanquocviet30062006-cmd
 
-/libs/patient/                             caoxuanthanh28206-prog
-/libs/clinical/                            caoxuanthanh28206-prog
-/libs/doctor/                              dovankiet2006-byte
-/libs/appointment/                         dovankiet2006-byte
-/libs/ai/                                  thaianh050406-arch caoxuanthanh28206-prog
+/libs/patient/                             @caoxuanthanh28206-prog
+/libs/clinical/                            @caoxuanthanh28206-prog
+/libs/doctor/                              @dovankiet2006-byte
+/libs/appointment/                         @dovankiet2006-byte
+/libs/ai/                                  @thaianh050406-arch @caoxuanthanh28206-prog
 
-/docs/architecture/                        doanquocviet30062006-cmd
-/docs/DATA-MODEL.MD                        doanquocviet30062006-cmd
-/docs/API-CONTRACTS.md                     doanquocviet30062006-cmd
-/docs/SECURITY.md                          caoxuanthanh28206-prog
-/docs/AI-SAFETY.md                         thaianh050406-arch caoxuanthanh28206-prog
-/docs/DEVELOPMENT-CONTRACTS.md             doanquocviet30062006-cmd
+/docs/architecture/                        @doanquocviet30062006-cmd
+/docs/DATA-MODEL.MD                        @doanquocviet30062006-cmd
+/docs/API-CONTRACTS.md                     @doanquocviet30062006-cmd
+/docs/SECURITY.md                          @caoxuanthanh28206-prog
+/docs/AI-SAFETY.md                         @thaianh050406-arch @caoxuanthanh28206-prog
+/docs/DEVELOPMENT-CONTRACTS.md             @doanquocviet30062006-cmd
