@@ -1,0 +1,54 @@
+name: Governance
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    name: governance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify source-of-truth documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f docs/IMPLEMENTATION-PLAN.md
+          test -f docs/DEVELOPMENT-CONTRACTS.md
+          test -f docs/DECISION-LOG.md
+          test -f docs/DECISION-CLOSURE-REPORT.md
+          test -f docs/GITHUB-DEVELOPMENT-WORKFLOW.md
+
+      - name: Verify workflow headings
+        shell: bash
+        run: |
+          set -euo pipefail
+          for heading in \
+            '## 1. Repository Model' \
+            '## 2. Team Ownership' \
+            '## 3. Branch Strategy' \
+            '## 7. CODEOWNERS Strategy' \
+            '## 9. CI Required Checks' \
+            '## 10. Nx Boundary Enforcement' \
+            '## 11. Codex Workflow' \
+            '## 20. Definition of Done'; do
+            grep -Fq "$heading" docs/GITHUB-DEVELOPMENT-WORKFLOW.md
+          done
+
+      - name: Detect accidental credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE --exclude-dir=.git --exclude='*.md' \
+            '(BEGIN (RSA|OPENSSH|PRIVATE) KEY|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{20,})' .; then
+            echo 'Potential credential detected.' >&2
+            exit 1
+          fi
