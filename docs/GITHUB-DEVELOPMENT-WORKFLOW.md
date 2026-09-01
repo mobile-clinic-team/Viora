@@ -1,8 +1,9 @@
 # GitHub Development Workflow
 
-This document defines the proposed repository governance and development workflow for the four-engineer Viora team. It is a workflow proposal only. It does not create a GitHub repository, change GitHub settings, create a real CODEOWNERS file, create branches, or push code.
+This document defines the repository governance and development workflow for the four-engineer Viora team. It does not change GitHub settings, create branches, or push code. The current CI inventory and gate classification are maintained in `docs/CI-CHECK-INVENTORY.md`.
 
-Where GitHub usernames, team handles, or final Nx paths are not defined by the source documents, this document records `TBD — HUMAN INPUT REQUIRED`.
+Where GitHub usernames, team handles, or GitHub setting values are not defined
+by the source documents, this document records `TBD — HUMAN INPUT REQUIRED`.
 
 ## 1. Repository Model
 
@@ -87,13 +88,15 @@ The PR checklist must confirm that scope is limited, no invented API/entity/role
 
 ## 7. CODEOWNERS Strategy
 
-This is a CODEOWNERS proposal; no actual `.github/CODEOWNERS` file is created by this document.
+The actual `.github/CODEOWNERS` file is the path-ownership source for the
+repository. This section defines the review expectation; FOUND-003 does not
+change GitHub settings that enforce required reviews.
 
-The final GitHub owner handles are:
+The current GitHub owner handles are maintained in `.github/CODEOWNERS`.
 
-`TBD — HUMAN INPUT REQUIRED`
-
-They must be supplied for Engineer A, B, C, D and for the appropriate Architecture, Security, Clinical, AI Safety, and Operations/Release reviewers. Do not substitute invented usernames or team handles.
+Specialist review remains required where a protected concern is affected. Any
+missing team-level enforcement or administrator setting is a GitHub operations
+task, not an assumption made by this document.
 
 The eventual CODEOWNERS rules must enforce at least:
 
@@ -129,23 +132,12 @@ Required administrator, emergency bypass, and GitHub organization policy owners 
 
 ## 9. CI Required Checks
 
-The required check inventory should include:
-
-- dependency install and lockfile validation;
-- formatting/lint;
-- typecheck;
-- unit tests;
-- Nx affected project tests;
-- integration/API tests for affected areas;
-- build/package validation;
-- Nx dependency-boundary validation;
-- migration validation, schema/constraint checks, and migration ordering checks;
-- security checks, secret scanning, dependency/container scanning as applicable;
-- tenant-isolation and authorization checks for affected protected APIs;
-- AI safety/evaluation checks for affected AI changes;
-- documentation/contract consistency checks where configured.
-
-CI may use affected checks for speed, but the merge gate must cover every affected project and must not omit a required cross-cutting check. The exact GitHub check names are `TBD — HUMAN INPUT REQUIRED`.
+The authoritative check inventory, blocking classification, applicability and
+pre-/post-skeleton transition are recorded in
+`docs/CI-CHECK-INVENTORY.md`. CI may use affected checks for speed after Nx
+exists, but the merge gate must cover every affected project and required
+cross-cutting check. FOUND-003 does not create the missing implementation
+workflows or claim checks that cannot run yet.
 
 ## 10. Nx Boundary Enforcement
 
@@ -158,6 +150,8 @@ CI may use affected checks for speed, but the merge gate must cover every affect
 - Final project names, tags, and path patterns are defined by
   `docs/architecture/NX-PROJECT-GRAPH.md`; changes require affected-owner and
   Architecture review.
+- Pre-skeleton and post-skeleton CI behavior is defined by
+  `docs/CI-CHECK-INVENTORY.md`.
 
 ## 11. Codex Workflow
 
@@ -266,10 +260,13 @@ A task is done only when:
 For `FOUND-003 — Establish CI check inventory and PR gates`:
 
 1. Create a GitHub Issue containing `FOUND-003`, Phase 0, Engineer A/C ownership, dependencies, acceptance criteria, and the required check inventory.
-2. Create `feature/FOUND-003-ci-pr-gates` from `main`.
+2. Create `chore/FOUND-003-ci-pr-gates` from `main`.
 3. Codex works only within the Issue scope, performs local validation, and commits to that branch.
 4. Open a PR linking the Issue and documenting affected repository policy, Nx, security, migration, and AI impact (or explicitly “none”).
-5. CI runs install, lint, typecheck, unit/affected tests, build, Nx boundary, migration validation, and security checks.
+5. CI runs the applicable current governance/security checks. After the Nx
+   skeleton and source prerequisites exist, it also runs install, lint,
+   typecheck, unit/affected tests, build, Nx boundary, migration validation,
+   and other required checks from `docs/CI-CHECK-INVENTORY.md`.
 6. Engineer A/C and any required Architecture/Security reviewer review the PR; all conversations are resolved.
 7. An authorized human merges the approved PR into protected `main`; Codex does not merge.
 
