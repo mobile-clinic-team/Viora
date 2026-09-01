@@ -1,0 +1,6 @@
+{
+  "name": "identity-application-entrypoint",
+  "projectType": "library",
+  "sourceRoot": "libs/identity/application-entrypoint",
+  "tags": ["boundary:identity-application-entrypoint", "scope:identity", "type:application-entrypoint"]
+}
