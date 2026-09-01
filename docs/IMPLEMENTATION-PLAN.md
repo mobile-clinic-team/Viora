@@ -529,7 +529,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | APPROVED — DESIGN RECORDED |
 | FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN REVIEW |
 | FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN REVIEW |
-| AUTH-001 | Implement user/membership/tenant context contract | 2 | A | FOUND-001, auth decisions | BLOCKED |
+| AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | READY FOR PLAN APPROVAL |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | BLOCKED |
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002 | BLOCKED |
 | PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | BLOCKED |
@@ -552,6 +552,23 @@ mutations/events, even though their feature work can be reviewed in parallel.
 
 Each task is small enough for one focused Codex session after dependencies
 are complete. No Post-MVP task is included.
+
+### AUTH-001 Scope Boundary
+
+AUTH-001 establishes provider-neutral identity and tenant-context contracts,
+identity domain invariants, the platform context abstraction, and the public
+identity application boundary needed to establish a valid actor and membership
+context. It must fail closed for missing identity, invalid membership, or a
+tenant identifier that is not supported by the actor's verified membership.
+
+AUTH-001 does not implement a provider SDK or provider-specific adapter,
+tenant/location management APIs, a full authorization or IDOR policy engine,
+database schema/migrations/repositories, or any Patient, Doctor, Appointment,
+Clinical, or AI functionality. Tests use deterministic synthetic data and
+verify authenticated, unauthenticated, invalid-membership, cross-tenant, and
+provider-payload isolation cases. The implementation must use the approved
+Nx public boundaries and expose no credentials, tokens, ORM types, or
+provider-specific claims through public contracts.
 
 ## 25. Task Granularity
 

@@ -1,0 +1,6 @@
+{
+  "name": "identity-application",
+  "projectType": "library",
+  "sourceRoot": "libs/identity/application",
+  "tags": ["boundary:identity-application", "scope:identity", "type:application"]
+}
