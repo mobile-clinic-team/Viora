@@ -34,6 +34,34 @@ clinical decisions. The project documentation does not make unapproved
 regulatory or certification claims; applicable compliance obligations remain
 an open decision.
 
+## 1A. Source-Control Data Protection
+
+Source control is not an approved storage location for healthcare data,
+production exports, credentials, API keys, tokens, private keys, certificates,
+or other security-sensitive material. The following rules apply to every
+branch, commit, pull request, issue attachment, and GitHub Actions artifact:
+
+- Never commit real patient data, PHI/PII, medical records, appointments,
+  clinical files, database dumps, production logs, backups, or exports.
+- Never commit API keys, OAuth/OIDC secrets, JWT signing keys, encryption keys,
+  passwords, connection strings, provider credentials, or `.env` files.
+- Use synthetic or properly approved masked fixtures for development and tests.
+- Store runtime secrets in the approved managed secret store and inject them at
+  runtime; use `.env.example` only with non-sensitive placeholder values.
+- `.gitignore` is a convenience control, not a security boundary. A file that
+  was previously committed remains in Git history and requires incident
+  response, credential rotation, and history remediation.
+- Pull requests must pass repository secret scanning. A detected secret or
+  healthcare data file blocks merge until the incident is assessed and the
+  material is removed from all reachable history.
+- If a secret or healthcare data is committed, stop distribution, revoke or
+  rotate the credential, preserve audit evidence, notify Security, and do not
+  simply delete the file in a later commit.
+
+These controls prevent accidental source-control disclosure; they do not
+replace database, storage, access-control, encryption, retention, or incident
+response controls.
+
 ## 2. Security Threat Model
 
 | Threat | Attack Surface | Impact | Primary Mitigation | Detection |

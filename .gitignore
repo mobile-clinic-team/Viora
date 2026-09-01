@@ -1,0 +1,41 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Healthcare and operational data: never commit real data
+*.sql
+*.dump
+*.backup
+*.bak
+*.csv
+*.tsv
+*.log
+*.sqlite
+*.sqlite3
+data/
+fixtures/real/
+uploads/
+storage/
+backups/
+exports/
+patient-data/
+medical-records/
+clinical-files/
+
+# Local tooling/build output
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+.tmp/
+tmp/
