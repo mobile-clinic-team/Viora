@@ -1,0 +1,6 @@
+{
+  "name": "platform-audit",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/audit",
+  "tags": ["boundary:platform-audit", "scope:platform", "type:platform-audit"]
+}

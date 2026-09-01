@@ -1,0 +1,6 @@
+{
+  "name": "identity-contracts",
+  "projectType": "library",
+  "sourceRoot": "libs/identity/contracts",
+  "tags": ["boundary:identity-contract", "scope:identity", "type:contract"]
+}

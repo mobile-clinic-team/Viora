@@ -1,0 +1,6 @@
+{
+  "name": "platform-config",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/config",
+  "tags": ["boundary:platform-config", "scope:platform", "type:platform-config"]
+}

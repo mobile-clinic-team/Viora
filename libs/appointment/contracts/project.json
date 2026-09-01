@@ -1,0 +1,6 @@
+{
+  "name": "appointment-contracts",
+  "projectType": "library",
+  "sourceRoot": "libs/appointment/contracts",
+  "tags": ["boundary:appointment-contract", "scope:appointment", "type:contract"]
+}

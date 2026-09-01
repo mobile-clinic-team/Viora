@@ -96,6 +96,7 @@ boundary:web-api-client, boundary:shared-util
 
 ```text
 Scopes:
+scope:api, scope:workers
 scope:identity, scope:tenant, scope:patient, scope:doctor
 scope:appointment, scope:clinical, scope:audit, scope:ai
 scope:platform, scope:web, scope:shared

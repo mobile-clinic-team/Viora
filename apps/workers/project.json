@@ -1,0 +1,6 @@
+{
+  "name": "workers",
+  "projectType": "application",
+  "sourceRoot": "apps/workers",
+  "tags": ["boundary:app-workers", "scope:workers", "type:app-workers"]
+}

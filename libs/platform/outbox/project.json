@@ -1,0 +1,6 @@
+{
+  "name": "platform-outbox",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/outbox",
+  "tags": ["boundary:platform-outbox", "scope:platform", "type:platform-outbox"]
+}

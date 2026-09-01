@@ -1,0 +1,6 @@
+{
+  "name": "ai-gateway",
+  "projectType": "library",
+  "sourceRoot": "libs/ai/gateway",
+  "tags": ["boundary:ai-gateway", "scope:ai", "type:ai-gateway"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "web-api-client",
+  "projectType": "library",
+  "sourceRoot": "libs/web/api-client",
+  "tags": ["boundary:web-api-client", "scope:web", "type:generated-client"]
+}

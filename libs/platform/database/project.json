@@ -1,0 +1,6 @@
+{
+  "name": "platform-database",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/database",
+  "tags": ["boundary:platform-database-port", "scope:platform", "type:platform-port"]
+}

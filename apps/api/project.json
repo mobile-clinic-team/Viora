@@ -1,0 +1,6 @@
+{
+  "name": "api",
+  "projectType": "application",
+  "sourceRoot": "apps/api",
+  "tags": ["boundary:app-api-composition-root", "scope:api", "type:app-api"]
+}

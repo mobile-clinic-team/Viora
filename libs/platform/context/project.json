@@ -1,0 +1,6 @@
+{
+  "name": "platform-context",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/context",
+  "tags": ["boundary:platform-context", "scope:platform", "type:platform-context"]
+}

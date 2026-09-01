@@ -1,0 +1,6 @@
+{
+  "name": "web",
+  "projectType": "application",
+  "sourceRoot": "apps/web",
+  "tags": ["boundary:app-web", "scope:web", "type:app-web"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "audit-contracts",
+  "projectType": "library",
+  "sourceRoot": "libs/audit/contracts",
+  "tags": ["boundary:audit-contract", "scope:audit", "type:contract"]
+}
