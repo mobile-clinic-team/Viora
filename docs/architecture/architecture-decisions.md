@@ -1500,6 +1500,11 @@ STORAGE_SECRET
 Secrets must be supplied through an approved
 secret-management mechanism.
 
+FOUND-002 defines the local/test file convention, configuration precedence,
+test-credential limits, and leak-response procedure in
+`docs/CONFIGURATION-AND-SECRETS.md`. It does not select a provider or implement
+runtime secret loading.
+
 50. Environment Separation
 
 Required environments:
@@ -1520,6 +1525,10 @@ secrets
 storage
 AI configuration
 observability configuration
+
+Local and test configuration must follow the FOUND-002 contract. Production
+configuration and secrets remain external to the repository and are delivered
+by the managed provider selected for release.
 
 Production healthcare data MUST NOT be copied into
 development environments without an approved

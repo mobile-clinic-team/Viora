@@ -765,8 +765,10 @@ production healthcare data must not be used in local/test development unless
 explicitly authorized by policy. Production access is privileged, audited,
 and never embedded in source or committed configuration.
 
-Exact deployment, secret-delivery, and environment promotion mechanisms are
-open. Self-hosted Dify is the approved AI platform direction, but it must be
+FOUND-002 records the local/test configuration, secret, credential, and data
+handling contract in `docs/CONFIGURATION-AND-SECRETS.md`. Exact deployment,
+production secret-delivery, and environment promotion mechanisms remain open.
+Self-hosted Dify is the approved AI platform direction, but it must be
 integrated only through the AI Gateway and Tool Gateway.
 
 ## 46. Test Data
@@ -774,7 +776,10 @@ integrated only through the AI Gateway and Tool Gateway.
 Development and test data must be synthetic, isolated, non-sensitive,
 reproducible, and tenant-aware. Real patient data must not be copied into
 development/test environments. Fixtures must cover multiple tenants and
-negative authorization cases without containing secrets or PHI.
+negative authorization cases without containing secrets or PHI. The
+FOUND-002 configuration contract additionally requires deterministic fixtures
+where possible, isolated test credentials, and no production dumps or copied
+clinical files.
 
 ## 47. Migration Safety
 
@@ -850,7 +855,7 @@ production-release blockers until approved.
 | DEV-006 | Public conflict, stale-update, and retry semantics | Approved OCC, domain-specific retry, idempotency and security re-check controls prevent stale writes and unsafe retries | Appointment/Clinical/Tenant/AI | API Contract; Architecture Gate | Resolved for MVP | Engineers B/C |
 | DEV-007 | Background queue/dead-letter implementation | Determines retry, failure, and job isolation behavior | Workers/AI/Notification | Architecture Sections 42, 54 | Required before worker production | Operations/Engineer D |
 | DEV-008 | Observability platform and retention | Determines detection, tracing, and operational response | All | Architecture Section 55; Security | Required before production | Security/Operations |
-| DEV-009 | Environment promotion and secret-delivery mechanism | Prevents credential/data leakage across environments | Infrastructure/All | Security; Architecture | Blocking for production | Security/Operations |
+| DEV-009 | Environment promotion and secret-delivery mechanism | Prevents credential/data leakage across environments; FOUND-002 records local/test rules while production delivery remains open | Infrastructure/All | `docs/CONFIGURATION-AND-SECRETS.md`; Security; Architecture | Blocking for production | Security/Operations |
 | DEV-010 | Dependency management/update and code-ownership mechanism | Determines supply-chain and review control | All | This document | Required before production | Team |
 | DEV-011 | Final permission matrix for separate Nurse/Clinical Staff and Receptionist roles | Endpoint-specific least privilege and default deny are approved | Identity/Patient/Clinical/Appointment | System Definition; Data Model; API Contract; Security | Resolved for MVP | Engineer A/Product |
 | DEV-012 | Clinical approval workflow using canonical status `IN_REVIEW` | Authorized clinician review/edit/approve with step-up MFA, OCC revalidation, stale-draft handling, and audit provenance are approved | Clinical/AI | Architecture; Data Model; API Contract; AI Safety | Resolved for MVP | Engineer B/Product |

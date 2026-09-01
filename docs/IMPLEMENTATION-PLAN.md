@@ -106,7 +106,7 @@ clinical files are Post-MVP as stated by the approved source decisions.
 |---|---|---|---|---|
 | Confirm conceptual Nx apps/libs and project graph | Team/Architecture | Blocking DEV-001 | Approved graph decision | Imports and public boundaries are documented; no invented paths are required |
 | Establish TypeScript/lint/format/test entry points | Engineer A | Graph decision | Repository checks | Existing configuration is followed; no checks are disabled |
-| Establish environment/configuration contract | Engineer A | Security decisions | Local/test configuration contract | Secrets are externalized; environments are isolated |
+| Establish environment/configuration contract | Engineer A | Security decisions | `docs/CONFIGURATION-AND-SECRETS.md` local/test configuration contract | Secrets are externalized; environments are isolated; production delivery remains release-scoped |
 | Establish Git/PR/documentation workflow | Team | DEV-003 | Review workflow | Required owner/security/tenant checks are described |
 | Establish CI check plan | Engineer A/C | DEV-002 | Check inventory | Lint, type check, unit, integration, API, build, security, dependency checks are mapped |
 
@@ -527,7 +527,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | Task ID | Title | Phase | Owner | Dependencies | Status |
 |---|---|---:|---|---|---|
 | FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | APPROVED — DESIGN RECORDED |
-| FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | OPEN |
+| FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN REVIEW |
 | FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | OPEN |
 | AUTH-001 | Implement user/membership/tenant context contract | 2 | A | FOUND-001, auth decisions | BLOCKED |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | BLOCKED |
