@@ -269,3 +269,18 @@ For `FOUND-003 — Establish CI check inventory and PR gates`:
 7. An authorized human merges the approved PR into protected `main`; Codex does not merge.
 
 This example describes the governance workflow only; it does not create the Issue, branch, PR, GitHub settings, or implementation.
+
+## 23. Source-Control Data and Secret Protection
+
+GitHub is not an approved storage location for healthcare data or runtime
+secrets. Never commit real PHI/PII, medical records, clinical files, database
+dumps, production logs, backups, API keys, OAuth/OIDC secrets, JWT signing
+keys, encryption keys, passwords, connection strings, provider credentials, or
+`.env` files. Use synthetic fixtures and `.env.example` placeholders only.
+
+The repository uses `.gitignore` as a first-line convenience control and a
+GitHub Actions secret scan as a merge gate. `.gitignore` does not remove data
+from Git history. If sensitive material is committed, stop, rotate/revoke it,
+notify Security, and remediate the complete reachable history before merging.
+Secret-scan and governance checks must pass before a protected branch is
+updated.
