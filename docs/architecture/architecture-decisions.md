@@ -1691,7 +1691,11 @@ These values are business/operational decisions.
 
 58. CI/CD
 
-Every pull request must pass automated checks.
+Every pull request must pass applicable automated checks. The current
+repository check inventory, blocking classification, ownership, and
+pre-/post-skeleton transition are defined in
+`docs/CI-CHECK-INVENTORY.md`. FOUND-003 does not create CI workflows or claim
+checks that have no implementation prerequisite.
 
 Developer
     │
@@ -1718,6 +1722,11 @@ Merge
     │
     ▼
 Deployment
+
+Before the Nx skeleton and application source exist, only repository
+governance and secret scanning are implemented. Formatting, lint, typecheck,
+tests, build, dependency, affected-project, and boundary checks become
+blocking when their required configuration and projects exist.
 59. Database Migration Policy
 
 All schema changes MUST use versioned migrations.

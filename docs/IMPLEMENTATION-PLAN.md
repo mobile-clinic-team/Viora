@@ -108,7 +108,7 @@ clinical files are Post-MVP as stated by the approved source decisions.
 | Establish TypeScript/lint/format/test entry points | Engineer A | Graph decision | Repository checks | Existing configuration is followed; no checks are disabled |
 | Establish environment/configuration contract | Engineer A | Security decisions | `docs/CONFIGURATION-AND-SECRETS.md` local/test configuration contract | Secrets are externalized; environments are isolated; production delivery remains release-scoped |
 | Establish Git/PR/documentation workflow | Team | DEV-003 | Review workflow | Required owner/security/tenant checks are described |
-| Establish CI check plan | Engineer A/C | DEV-002 | Check inventory | Lint, type check, unit, integration, API, build, security, dependency checks are mapped |
+| Establish CI check plan | Engineer A/C | DEV-002 | `docs/CI-CHECK-INVENTORY.md` | Lint, type check, unit, integration, API, build, security, dependency, Nx, and PR-gate checks are mapped with applicability and blocking status |
 
 No application domain implementation starts until Nx boundaries, secure
 configuration handling, and the required decision gates are accepted.
@@ -528,7 +528,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 |---|---|---:|---|---|---|
 | FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | APPROVED — DESIGN RECORDED |
 | FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN REVIEW |
-| FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | OPEN |
+| FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN REVIEW |
 | AUTH-001 | Implement user/membership/tenant context contract | 2 | A | FOUND-001, auth decisions | BLOCKED |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | BLOCKED |
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002 | BLOCKED |
@@ -735,7 +735,7 @@ OPEN DECISIONS until approved.
 # Open Implementation Decisions
 
 - Exact Nx project graph and final paths.
-- CI/CD implementation and dependency/security automation.
+- CI/CD workflow implementation and dependency/security automation after the FOUND-003 inventory is reviewed.
 - Branch, commit, merge, and code-ownership conventions.
 - Testing frameworks and integration environment.
 - Migration deployment/rollback automation.

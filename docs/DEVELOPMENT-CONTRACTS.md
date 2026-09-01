@@ -601,6 +601,12 @@ typed domain/API errors.
 Existing repository configuration takes precedence; this document does not
 introduce a new framework or compiler configuration.
 
+CI check status, blocking classification, and the transition from the current
+security/governance baseline to post-Nx quality and boundary checks are defined
+in `docs/CI-CHECK-INVENTORY.md`. FOUND-003 does not claim lint, typecheck,
+tests, build, dependency, or Nx checks before their implementation
+prerequisites exist.
+
 ## 34. Dependency Management
 
 Dependencies require an owning module, a justified purpose, security review,
@@ -848,7 +854,7 @@ production-release blockers until approved.
 | ID | Decision | Why it matters | Affected domain | Affected document | Blocking level | Owner |
 |---|---|---|---|---|---|---|
 | DEV-001 | Nx project graph and dependency direction | Option 2 domain-first modular monolith with lazy scaffolding, AI/Tool Gateway libraries under `libs/ai/*`, approved Shared Platform primitives, public cross-domain contracts, and Nx ownership constraints are approved; detailed paths are recorded in `docs/architecture/NX-PROJECT-GRAPH.md` | All | Architecture Section 60; `docs/architecture/NX-PROJECT-GRAPH.md`; this document | Resolved for MVP | Architecture owner/team |
-| DEV-002 | CI/CD implementation and boundary-check strategy | Required to enforce lint, types, tests, security, and Nx constraints | All | Architecture Section 58 | Required before production | Team/Operations |
+| DEV-002 | CI/CD implementation and boundary-check strategy | FOUND-003 records the check inventory, blocking policy, ownership, and pre-/post-skeleton transition; workflow implementation remains task-scoped | All | `docs/CI-CHECK-INVENTORY.md`; Architecture Section 58 | Required before production | Team/Operations |
 | DEV-003 | Branching, commit, merge, and code-ownership conventions | Determines review and release traceability | All | Not yet decided | Required before team scale | Team |
 | DEV-004 | Testing framework and integration-test environment | Determines repeatable security/tenant/AI verification | All | Architecture testing sections | Required before implementation | Team |
 | DEV-005 | Migration workflow, deployment sequencing, and rollback automation | Approved hybrid risk-based migration strategy with preflight, compatibility, verification and rollback/forward-fix controls | Database domains | Architecture Section 59; Data Model Section 54 | Resolved for MVP | Engineer A + affected owner |
