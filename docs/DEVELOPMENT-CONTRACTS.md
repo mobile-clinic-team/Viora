@@ -60,8 +60,9 @@ infrastructure adapters. `apps/web` is a client, `apps/api` is the API
 boundary, and `apps/workers` handles approved asynchronous work. The AI
 subsystem remains behind its AI Gateway and explicit tools.
 
-The exact Nx project graph, library naming, and detailed folder structure
-are not finalized; they are recorded under Open Development Decisions.
+The approved graph, library naming, lazy-scaffolding rule, and detailed folder
+structure are recorded in `docs/architecture/NX-PROJECT-GRAPH.md` under
+FOUND-001. That document is the implementation boundary for Nx projects.
 
 ## 4. Nx Boundary Rules
 
@@ -73,7 +74,7 @@ or database table.
 | Source Domain | Allowed Dependency | Forbidden Dependency |
 |---|---|---|
 | Web/API | Public application/domain contracts and shared primitives | Direct database, private domain internals |
-| Identity/Tenant | Shared primitives and approved platform contracts | Patient/Clinical private internals |
+| Identity/Tenant | `boundary:identity-contract`, `boundary:tenant-contract`, `boundary:shared-util`, and the explicit platform boundaries listed in `docs/architecture/NX-PROJECT-GRAPH.md` | Patient/Clinical private internals |
 | Patient | Shared primitives and approved Identity/Tenant contracts | Clinical database tables or private repositories |
 | Doctor/Appointment | Public Patient/Identity/Tenant contracts | Clinical database tables or private repositories |
 | Clinical | Public Patient/Appointment/Identity contracts | Other domain database tables |
@@ -841,7 +842,7 @@ production-release blockers until approved.
 
 | ID | Decision | Why it matters | Affected domain | Affected document | Blocking level | Owner |
 |---|---|---|---|---|---|---|
-| DEV-001 | Nx project graph and dependency direction | Hybrid modular backend with isolated AI/Tool Gateway, approved Shared Platform primitives, public cross-domain contracts, and Nx ownership constraints are approved; exact folder names remain implementation detail | All | Architecture Section 60; this document | Resolved for MVP | Architecture owner/team |
+| DEV-001 | Nx project graph and dependency direction | Option 2 domain-first modular monolith with lazy scaffolding, AI/Tool Gateway libraries under `libs/ai/*`, approved Shared Platform primitives, public cross-domain contracts, and Nx ownership constraints are approved; detailed paths are recorded in `docs/architecture/NX-PROJECT-GRAPH.md` | All | Architecture Section 60; `docs/architecture/NX-PROJECT-GRAPH.md`; this document | Resolved for MVP | Architecture owner/team |
 | DEV-002 | CI/CD implementation and boundary-check strategy | Required to enforce lint, types, tests, security, and Nx constraints | All | Architecture Section 58 | Required before production | Team/Operations |
 | DEV-003 | Branching, commit, merge, and code-ownership conventions | Determines review and release traceability | All | Not yet decided | Required before team scale | Team |
 | DEV-004 | Testing framework and integration-test environment | Determines repeatable security/tenant/AI verification | All | Architecture testing sections | Required before implementation | Team |

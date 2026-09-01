@@ -8,6 +8,9 @@
 /apps/api/                                 @doanquocviet30062006-cmd @caoxuanthanh28206-prog
 /apps/workers/                             @doanquocviet30062006-cmd
 
+/libs/platform/                             @doanquocviet30062006-cmd
+/libs/web/                                  @doanquocviet30062006-cmd
+
 /libs/identity/                            @doanquocviet30062006-cmd @caoxuanthanh28206-prog
 /libs/tenant/                              @doanquocviet30062006-cmd @caoxuanthanh28206-prog
 /libs/audit/                               @doanquocviet30062006-cmd @caoxuanthanh28206-prog

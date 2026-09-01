@@ -1746,13 +1746,19 @@ libs/
 ├── notification
 ├── audit
 ├── ai
+├── platform
+├── web
 └── shared
 
-The exact project graph may evolve.
+The graph uses domain-first libraries with lazy scaffolding. The initial
+runtime apps are `web`, `api`, and `workers`; AI Gateway and Tool Gateway are
+library boundaries under `libs/ai/*` and run inside `apps/api`. Changes to this
+direction require an architecture decision.
 
 61. Nx Domain Boundaries
 
-Nx dependency constraints SHOULD enforce domain boundaries.
+Nx dependency constraints MUST enforce the domain and layer boundaries defined
+in `docs/architecture/NX-PROJECT-GRAPH.md`.
 
 Valid:
 
@@ -2493,7 +2499,9 @@ that must be completed before the corresponding production
 capability is deployed.
 The approved MVP topology is hybrid: Identity/Tenant, Patient, Doctor/
 Appointment, and Clinical capabilities remain modular backend domains, while
-the AI Gateway and Tool Gateway are isolated Nx applications/boundaries. Shared
+the AI Gateway and Tool Gateway are independently bounded Nx libraries under
+`libs/ai/*`, running inside `apps/api`; they are the only AI-to-application
+capability path. Shared
 Platform exposes only approved primitives; domain private internals are not
 importable across domains, and Nx tags/constraints enforce ownership and
 dependency direction.

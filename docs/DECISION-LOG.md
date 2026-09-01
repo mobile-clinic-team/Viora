@@ -1223,24 +1223,27 @@ Human / Project Owner
 
 **Selected Option:**
 
-Option C — Hybrid modular backend with an isolated AI Gateway/Tool Gateway.
+Option 2 — Domain-first modular monolith with lazy scaffolding.
 
 **Approved MVP Boundary:**
 
 - Core Identity/Tenant, Patient, Doctor/Appointment, and Clinical capabilities
   remain in a modular backend with domain-owned application services.
-- AI Gateway and Tool Gateway are isolated Nx applications/boundaries and are
-  the only AI-to-application capability path.
+- AI Gateway and Tool Gateway are independently bounded libraries under
+  `libs/ai/*`, run inside `apps/api`, and are the only AI-to-application
+  capability path. Extraction into separate applications requires a new
+  architecture decision.
 - Shared Platform contains only approved primitives such as authentication
   context, tenant context, audit, database, idempotency, and outbox contracts.
 - Domain libraries must not import another domain's private internals; cross-
   domain access uses public application contracts.
-- Nx tags/constraints must enforce dependency direction and ownership. Exact
-  repository folder names remain an implementation detail within this boundary.
+- Nx tags/constraints must enforce dependency direction and ownership. The
+  approved graph and exact project paths are recorded in
+  `docs/architecture/NX-PROJECT-GRAPH.md`.
 
 **Decision Status:**
 
-APPROVED
+APPROVED — UPDATED FOR FOUND-001 OPTION 2
 
 **Approved by:**
 
