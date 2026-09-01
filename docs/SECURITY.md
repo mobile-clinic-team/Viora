@@ -62,6 +62,24 @@ These controls prevent accidental source-control disclosure; they do not
 replace database, storage, access-control, encryption, retention, or incident
 response controls.
 
+### 1A.1 Repository Baseline Status
+
+The repository baseline is intentionally limited to source-control and CI
+guardrails because application source code does not yet exist:
+
+| Control | Status | Evidence / boundary |
+|---|---|---|
+| Environment and local-secret ignore rules | Implemented | Root `.gitignore` and root `.env.example` placeholders |
+| Pull-request secret scanning | Configured | `.github/workflows/secret-scan.yml` runs Gitleaks on pull requests and pushes to `main` |
+| Credential-marker check | Configured | `.github/workflows/governance.yml` reports matching paths without printing matched lines |
+| Review ownership and security checklist | Configured | `.github/CODEOWNERS` and `.github/pull_request_template.md` |
+| Runtime secret delivery, rotation, and KMS integration | Planned | Requires application/infrastructure implementation; no provider credentials are stored here |
+| Dependency, build, typecheck, lint, and test gates | Deferred | No application/package manifest or executable source exists yet |
+| GitHub branch protection and required-review settings | Deferred | Must be enabled and verified in GitHub repository settings; not represented by local files |
+
+No application-level secret injection, authentication secret handling, or
+runtime security control is claimed as implemented by this repository baseline.
+
 ## 2. Security Threat Model
 
 | Threat | Attack Surface | Impact | Primary Mitigation | Detection |

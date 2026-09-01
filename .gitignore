@@ -1,7 +1,19 @@
-# Local environment and credentials
+# Environment files and local secret material
 .env
 .env.*
 !.env.example
+credentials.json
+secrets.json
+local-secrets.json
+api-keys.json
+*-credentials.json
+service-account*.json
+firebase-adminsdk-*.json
+google-application-credentials*.json
+credentials/
+secrets/
+
+# Private keys and certificates
 *.pem
 *.key
 *.crt
@@ -11,16 +23,7 @@
 *.jks
 *.keystore
 
-# Healthcare and operational data: never commit real data
-*.sql
-*.dump
-*.backup
-*.bak
-*.csv
-*.tsv
-*.log
-*.sqlite
-*.sqlite3
+# Local healthcare data and database artifacts; source migrations remain trackable
 data/
 fixtures/real/
 uploads/
@@ -30,8 +33,27 @@ exports/
 patient-data/
 medical-records/
 clinical-files/
+phi/
+health-data/
+healthcare-data/
+medical-data/
+dicom/
+hl7/
+fhir/
+*.dcm
+*.dicom
+*.hl7
+*.fhir
+*.edf
+*.edf+
+*.dump
+*.dump.gz
+*.backup
+*.bak
+*.sqlite
+*.sqlite3
 
-# Local tooling/build output
+# Dependencies and generated output
 node_modules/
 dist/
 build/
@@ -39,3 +61,17 @@ coverage/
 .cache/
 .tmp/
 tmp/
+*.log
+
+# IDE and operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*.log
+.vscode/*.tmp
+
+# Test and tool artifacts
+.nyc_output/
+playwright-report/
+test-results/
