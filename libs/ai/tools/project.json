@@ -1,0 +1,6 @@
+{
+  "name": "ai-tools",
+  "projectType": "library",
+  "sourceRoot": "libs/ai/tools",
+  "tags": ["boundary:ai-tools", "scope:ai", "type:ai-tools"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "platform-authorization",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/authorization",
+  "tags": ["boundary:platform-authorization", "scope:platform", "type:platform-authorization"]
+}

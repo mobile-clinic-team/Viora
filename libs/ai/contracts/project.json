@@ -1,0 +1,6 @@
+{
+  "name": "ai-contracts",
+  "projectType": "library",
+  "sourceRoot": "libs/ai/contracts",
+  "tags": ["boundary:ai-contracts", "scope:ai", "type:contract"]
+}

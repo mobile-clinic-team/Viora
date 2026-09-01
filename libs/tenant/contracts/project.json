@@ -1,0 +1,6 @@
+{
+  "name": "tenant-contracts",
+  "projectType": "library",
+  "sourceRoot": "libs/tenant/contracts",
+  "tags": ["boundary:tenant-contract", "scope:tenant", "type:contract"]
+}

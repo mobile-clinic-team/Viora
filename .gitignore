@@ -12,6 +12,10 @@ firebase-adminsdk-*.json
 google-application-credentials*.json
 credentials/
 secrets/
+!libs/platform/
+!libs/platform/secrets/
+libs/platform/secrets/*
+!libs/platform/secrets/project.json
 
 # Private keys and certificates
 *.pem
@@ -75,3 +79,9 @@ desktop.ini
 .nyc_output/
 playwright-report/
 test-results/
+
+.nx/installation
+.nx/cache
+.nx/workspace-data
+.nx/self-healing
+.nx/migrate-runs

@@ -1,0 +1,6 @@
+{
+  "name": "platform-messaging",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/messaging",
+  "tags": ["boundary:platform-messaging", "scope:platform", "type:platform-messaging"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "platform-observability",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/observability",
+  "tags": ["boundary:platform-observability", "scope:platform", "type:platform-observability"]
+}

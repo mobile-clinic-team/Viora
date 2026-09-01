@@ -1,0 +1,6 @@
+{
+  "name": "platform-idempotency",
+  "projectType": "library",
+  "sourceRoot": "libs/platform/idempotency",
+  "tags": ["boundary:platform-idempotency", "scope:platform", "type:platform-idempotency"]
+}

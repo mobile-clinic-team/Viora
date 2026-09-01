@@ -1,0 +1,6 @@
+{
+  "name": "clinical-contracts",
+  "projectType": "library",
+  "sourceRoot": "libs/clinical/contracts",
+  "tags": ["boundary:clinical-contract", "scope:clinical", "type:contract"]
+}
