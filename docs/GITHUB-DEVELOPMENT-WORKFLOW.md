@@ -8,7 +8,7 @@ Where GitHub usernames, team handles, or final Nx paths are not defined by the s
 
 - Use one GitHub repository for the Viora MVP.
 - Use `main` as the protected integration and release source branch.
-- Use a modular-monolith structure with the approved Nx boundaries: core Identity/Tenant, Patient, Doctor/Appointment, and Clinical modules, plus isolated AI Gateway and Tool Gateway applications/boundaries.
+- Use a modular-monolith structure with the approved Nx boundaries: core Identity/Tenant, Patient, Doctor/Appointment, and Clinical modules, plus independently bounded AI Gateway and Tool Gateway libraries under `libs/ai/*` running inside `apps/api`.
 - Shared/Platform contains only approved stable primitives, contracts, and infrastructure abstractions. It must not contain domain business logic.
 - Repository visibility, GitHub organization, repository name, and administrator/bypass actors are `TBD — HUMAN INPUT REQUIRED`.
 
@@ -106,7 +106,9 @@ The eventual CODEOWNERS rules must enforce at least:
 - `docs/AI-SAFETY.md` and AI safety policy → AI Safety reviewer;
 - `.github/`, CI, branch policy, and release configuration → repository/platform owner plus Architecture/Security or Operations reviewer as applicable.
 
-Exact repository path patterns are `TBD — HUMAN INPUT REQUIRED` until the approved Nx project graph and directory layout exist. CODEOWNERS must never be used to conceal an ownership conflict.
+Repository path patterns follow the approved graph in
+`docs/architecture/NX-PROJECT-GRAPH.md`. CODEOWNERS must never be used to
+conceal an ownership conflict.
 
 ## 8. Branch Protection
 
@@ -153,7 +155,9 @@ CI may use affected checks for speed, but the merge gate must cover every affect
 - AI may access Patient/Clinical/Appointment data only through explicit, authorized public tools/contracts; it may not access a database or arbitrary service directly.
 - Workers use public application commands and shared job contracts and may not bypass authorization or domain services.
 - Circular dependencies, path-import bypasses, and untagged boundary escapes fail CI.
-- Final project names, tags, and path patterns are `TBD — HUMAN INPUT REQUIRED` until the Nx graph is approved under `FOUND-001`.
+- Final project names, tags, and path patterns are defined by
+  `docs/architecture/NX-PROJECT-GRAPH.md`; changes require affected-owner and
+  Architecture review.
 
 ## 11. Codex Workflow
 
@@ -218,14 +222,15 @@ AI changes are owned by Engineer D and affected domain owners. Dify remains behi
 
 ## 19. 4-Engineer Parallelization
 
-The matrix below follows the source ownership and dependency plan. Exact Nx path patterns remain `TBD — HUMAN INPUT REQUIRED` until `FOUND-001` approves the project graph.
+The matrix below follows the source ownership and dependency plan. Nx paths
+follow `docs/architecture/NX-PROJECT-GRAPH.md`.
 
 | Engineer | Domain/libraries | Allowed logical paths | Required reviewers | Dependencies | Cannot modify without affected-owner review |
 |---|---|---|---|---|---|
 | A | Identity/Tenant, Audit, Shared/Platform, auth/context, secrets/config | Identity, tenant, audit, shared contracts/infrastructure | Security; Architecture for boundaries; affected domain owners for cross-domain work | Phase 0 foundation; access decisions before sensitive implementation | Patient/Clinical/Doctor/Appointment/AI private internals or schemas owned by others |
 | B | Patient, Clinical, encounters, medical records, approval integration | Patient and Clinical modules/contracts/tests | Clinical; Security; A for identity/audit effects | Auth/tenant context; Patient before dependent workflow; Appointment before encounter integration | Identity/Tenant/Appointment/AI private internals; immutable record rules cannot be weakened |
 | C | Doctor, Appointment, scheduling, operations | Doctor/Appointment modules/contracts/tests | Affected Patient/Identity owners; Security for protected mutations | Auth/tenant context; Patient and Doctor before appointment; concurrency decision | Clinical private internals; AI internals; Post-MVP Billing/Notification unless explicitly tasked |
-| D | AI Platform, AI Gateway, Tool Gateway, RAG, drafts, evaluation/safety | AI applications, tools, retrieval/evaluation boundaries | AI Safety; Security; affected domain owner; Architecture for boundary changes | Access foundation, Clinical/public contracts, audit/idempotency/outbox, AI decisions | Direct database access, domain private internals, autonomous clinical mutation paths |
+| D | AI Platform, AI Gateway, Tool Gateway, RAG, drafts, evaluation/safety | AI libraries, tools, retrieval/evaluation boundaries | AI Safety; Security; affected domain owner; Architecture for boundary changes | Access foundation, Clinical/public contracts, audit/idempotency/outbox, AI decisions | Direct database access, domain private internals, autonomous clinical mutation paths |
 
 Parallel work is safe only when it uses public contracts, respects the dependency graph, and has affected-owner review. “Full-stack” does not grant permission to modify another owner's private boundary.
 

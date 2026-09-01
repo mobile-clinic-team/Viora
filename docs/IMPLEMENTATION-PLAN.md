@@ -526,7 +526,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 
 | Task ID | Title | Phase | Owner | Dependencies | Status |
 |---|---|---:|---|---|---|
-| FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | READY |
+| FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | APPROVED — DESIGN RECORDED |
 | FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | OPEN |
 | FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | OPEN |
 | AUTH-001 | Implement user/membership/tenant context contract | 2 | A | FOUND-001, auth decisions | BLOCKED |
