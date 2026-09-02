@@ -2127,8 +2127,8 @@ Required operations include appointment creation, appointment rescheduling
 and commands, retry-sensitive patient/location/encounter/clinical/AI
 mutations, and future payment/webhook processing.
 
-The key is scoped by tenant and actor, matching the Data Model uniqueness
-rule `(tenant_id, actor_id, key)`. The server stores a request hash and
+The key is scoped by tenant, actor, endpoint, and key, matching the Data Model
+uniqueness rule `(tenant_id, actor_id, endpoint, key)`. The server stores a request hash and
 original result reference. Same key plus same payload returns the original
 result. Same key plus different payload returns `409
 IDEMPOTENCY_CONFLICT`. Processing retries cannot create duplicates. Idempotency
