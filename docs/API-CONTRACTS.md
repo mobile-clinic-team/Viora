@@ -354,12 +354,13 @@ Response:
 
 Errors:
 
-`400`, `401`, `403`, `404`, `409`, or `422`.
+`400`, `401`, `403`, `404`, `412`, or `422`.
 
-Idempotency:
+Concurrency:
 
-Not required by the current model; clients should use concurrency controls
-once the open versioning decision is resolved.
+Required strong `If-Match` header matching the current strong ETag. A stale
+version returns `412 Precondition Failed`; the mutation is not applied and
+the resource JSON does not expose `version` by default.
 
 Audit:
 
@@ -367,7 +368,9 @@ Required: tenant profile/configuration mutation.
 
 Notes:
 
-Cross-tenant updates are forbidden.
+Cross-tenant updates are forbidden. The only allowed field is `name`.
+`id`, `status`, `created_at`, `updated_at`, ownership fields, and all other
+fields are forbidden.
 
 ### GET /api/v1/tenants/{tenant_id}/locations
 
@@ -411,8 +414,8 @@ Privileged access is audited.
 
 Notes:
 
-Location status follows the operational soft-delete/archive policy; exact
-enum values are not fully established in the source documents.
+Location status is `ACTIVE`, `INACTIVE`, or `ARCHIVED`; new Locations are
+`ACTIVE`. Status changes are not accepted by this list endpoint.
 
 ### POST /api/v1/tenants/{tenant_id}/locations
 
@@ -434,7 +437,9 @@ Authorization:
 
 Request:
 
-JSON location fields: `name`, `address`, `phone`, and approved status fields.
+JSON location fields: `name`, `address`, and `phone`. `tenant_id`, `id`,
+`status`, `created_at`, and `updated_at` are not accepted from the client;
+the server assigns the path Tenant and defaults status to `ACTIVE`.
 
 Response:
 
@@ -446,9 +451,13 @@ Errors:
 
 Idempotency:
 
-Required for retryable client creation; use `Idempotency-Key` scoped to
-tenant and actor. Same key and same payload returns the original result;
-same key with a different payload returns `409 IDEMPOTENCY_CONFLICT`.
+Required for retryable client creation. The `Idempotency-Key` header is scoped
+by `tenant_id + actor_id + endpoint + key`. The request fingerprint is a
+canonical hash of the normalized payload. Same identity and fingerprint
+returns the original result; a different fingerprint returns
+`409 IDEMPOTENCY_CONFLICT`. Retention is 24 hours. The idempotency record and
+Location creation use one coordinated PLAT-001 transaction; failure rolls
+back the transaction and leaves the operation retryable.
 
 Audit:
 
