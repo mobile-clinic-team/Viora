@@ -1,0 +1,6 @@
+{
+  "name": "tenant-application-entrypoint",
+  "projectType": "library",
+  "sourceRoot": "libs/tenant/application-entrypoint",
+  "tags": ["boundary:tenant-application-entrypoint", "scope:tenant", "type:application-entrypoint"]
+}

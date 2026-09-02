@@ -1,0 +1,6 @@
+{
+  "name": "tenant-domain",
+  "projectType": "library",
+  "sourceRoot": "libs/tenant/domain",
+  "tags": ["boundary:tenant-domain", "scope:tenant", "type:domain"]
+}
