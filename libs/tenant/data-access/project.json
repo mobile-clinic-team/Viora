@@ -1,0 +1,6 @@
+{
+  "name": "tenant-data-access",
+  "projectType": "library",
+  "sourceRoot": "libs/tenant/data-access",
+  "tags": ["boundary:tenant-data-access", "scope:tenant", "type:data-access"]
+}
