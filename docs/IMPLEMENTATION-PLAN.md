@@ -530,9 +530,9 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN REVIEW |
 | FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN REVIEW |
 | AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | READY FOR PLAN APPROVAL |
-| AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | BLOCKED |
-| TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | READY FOR PLAN APPROVAL |
-| PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | BLOCKED |
+| AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | COMPLETED — MERGED TO MAIN |
+| TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | COMPLETED — MERGED TO MAIN |
+| PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | READY |
 | PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | BLOCKED |
 | DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | BLOCKED |
 | APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | BLOCKED |
@@ -569,6 +569,20 @@ verify authenticated, unauthenticated, invalid-membership, cross-tenant, and
 provider-payload isolation cases. The implementation must use the approved
 Nx public boundaries and expose no credentials, tokens, ORM types, or
 provider-specific claims through public contracts.
+
+### PAT-001 Scope Boundary
+
+PAT-001 establishes tenant-scoped Patient contracts and the Patient repository
+port. Every repository lookup and list contract must require `tenantId` and
+must not make cross-tenant discovery possible. The task adds deterministic
+tests for tenant-scope invariants and repository contract behavior using
+synthetic data only.
+
+PAT-001 does not add HTTP handlers or routes, Patient create/read/update/search
+application behavior, database migrations or a concrete database adapter,
+authorization policy beyond the existing shared boundary, audit integration,
+or any Clinical, Appointment, Doctor, or AI capability. Those remain in
+PAT-002 and their separately scoped dependent tasks.
 
 ## 25. Task Granularity
 
