@@ -124,4 +124,3 @@ and C-009, and blockers B-002 through B-004.
 - [x] Open outbox/idempotency/queue decisions are preserved rather than silently resolved.
 - [x] No migration or runtime implementation is added.
 - [ ] Affected schema/domain owners review and approve the proposed conceptual order.
-
