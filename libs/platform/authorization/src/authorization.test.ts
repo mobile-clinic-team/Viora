@@ -129,3 +129,18 @@ test('denies malformed action', () => {
 
   assert.deepEqual(decision, { allowed: false, reason: 'INVALID_CONTEXT' });
 });
+
+test('denies malformed request and resource without throwing', () => {
+  assert.deepEqual(
+    authorizeResourceAccess(null as unknown as AuthorizationRequest),
+    { allowed: false, reason: 'INVALID_CONTEXT' },
+  );
+
+  assert.deepEqual(
+    authorizeResourceAccess({
+      ...authorizedRequest,
+      resource: null,
+    } as unknown as AuthorizationRequest),
+    { allowed: false, reason: 'INVALID_RESOURCE' },
+  );
+});
