@@ -2217,7 +2217,7 @@ Before implementation begins, the following
 must be decided.
 
 P0 — Blocking
-[ ] Tenant / Location model
+[x] Tenant / Location model — TEN-001 ADR-01..06 canonicalized
 [ ] Patient identity model
     - patient multi-account
 [ ] Clinical record immutability
@@ -2286,6 +2286,30 @@ deployment baseline is defined
 CI/CD baseline is defined
 Nx dependency boundaries are defined
 Codex engineering rules are available
+
+## 77.1 TEN-001 Canonical Tenant / Location Boundary
+
+TEN-001 is canonicalized for implementation planning as follows:
+
+- A Tenant owns one or more Locations. `Location.tenant_id` is immutable and
+  Location transfer is not part of TEN-001.
+- Tenant deletion is restricted while Locations exist. Location deletion is
+  archive-only through `ACTIVE`, `INACTIVE`, and `ARCHIVED` lifecycle rules.
+- Location status defaults to `ACTIVE`; allowed transitions are
+  `ACTIVE <-> INACTIVE`, `INACTIVE -> ARCHIVED`, and `ACTIVE -> ARCHIVED` for
+  a higher-privilege administrator. Status is not an ordinary PATCH field.
+- Tenant and Location mutable resources use `BIGINT` versioning with strong
+  `ETag`/`If-Match`; stale updates return `412 Precondition Failed`.
+- Tenant PATCH allows only `name`. Future Location metadata mutation allows
+  only `name`, `address`, and `phone`. Identity, ownership, timestamps, and
+  status are protected.
+- Location creation uses PLAT-001 idempotency scoped by tenant, actor,
+  endpoint, and key, with canonical payload fingerprinting and 24-hour
+  retention.
+
+The current TEN-001 API surface remains limited to the four endpoints in
+`docs/API-CONTRACTS.md`; Location PATCH and status-transition operations need
+a later approved API contract.
 78. Implementation Sequence
 
 The engineering lifecycle follows:

@@ -531,7 +531,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN REVIEW |
 | AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | READY FOR PLAN APPROVAL |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | BLOCKED |
-| TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002 | BLOCKED |
+| TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | READY FOR PLAN APPROVAL |
 | PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | BLOCKED |
 | PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | BLOCKED |
 | DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | BLOCKED |

@@ -443,7 +443,7 @@ checks, while `409 Conflict` requires explicit business resolution.
 ## 22. Idempotency
 
 Implement the API contract's opaque `Idempotency-Key` for retry-sensitive
-mutations. State is scoped by `(tenant_id, actor_id, key)` and records a
+mutations. State is scoped by `(tenant_id, actor_id, endpoint, key)` and records a
 request hash and original result reference.
 
 - Same key and same request returns the original result.
