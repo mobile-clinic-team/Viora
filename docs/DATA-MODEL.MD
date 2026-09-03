@@ -108,6 +108,7 @@ Most mutable entities should contain:
 id
 created_at
 updated_at
+version
 ```
 
 Example:
@@ -141,6 +142,7 @@ name
 status
 created_at
 updated_at
+version
 ```
 
 ### Fields
@@ -152,6 +154,7 @@ updated_at
 | status     | ENUM        |       No | ACTIVE / SUSPENDED / ARCHIVED |
 | created_at | TIMESTAMPTZ |       No | Creation time                 |
 | updated_at | TIMESTAMPTZ |       No | Last update                   |
+| version    | BIGINT      |       No | Optimistic concurrency version |
 
 ---
 
@@ -170,6 +173,7 @@ phone
 status
 created_at
 updated_at
+version
 ```
 
 Relationship:
@@ -187,8 +191,32 @@ FOREIGN KEY (tenant_id) → tenants.id
 Recommended index:
 
 ```text
-INDEX (tenant_id)
+INDEX (tenant_id, id)
+INDEX (tenant_id, status)
 ```
+
+Location `version` is `BIGINT NOT NULL DEFAULT 1` for optimistic concurrency.
+
+TEN-001 canonical rules:
+
+- `locations.tenant_id` is immutable and Location transfer between Tenants is
+  not supported by TEN-001.
+- Tenant deletion uses `RESTRICT` while Locations remain linked.
+- Location deletion is represented by `status = 'ARCHIVED'`; TEN-001 does not
+  hard-delete Locations.
+- `UNIQUE(tenant_id, name)` prevents duplicate Location names within one
+  Tenant.
+- Tenant isolation is enforced by application authorization and repository
+  scoping. The foreign key protects referential integrity and is not an
+  authorization control.
+
+Location status is `ACTIVE | INACTIVE | ARCHIVED` and defaults to `ACTIVE`.
+Allowed transitions are `ACTIVE <-> INACTIVE`, `INACTIVE -> ARCHIVED`, and
+`ACTIVE -> ARCHIVED` for a higher-privilege administrator. Status changes use
+a dedicated transition operation and arbitrary client-provided status changes
+are forbidden. The current TEN-001 API surface does not expose a Location
+PATCH or status-transition endpoint; those operations require a later
+approved API contract.
 
 ---
 
@@ -605,8 +633,9 @@ EXCLUDE USING gist (
 ) WHERE (status NOT IN ('CANCELLED','NO_SHOW'))
 
 Mutable resources use the approved optimistic concurrency boundary. Canonical
-mutable MVP resources, including `appointments`, `patients`,
-`medical_records`, and `ai_drafts`, use `version BIGINT NOT NULL DEFAULT 1`.
+mutable MVP resources, including `tenants`, `locations`, `appointments`,
+`patients`, `medical_records`, and `ai_drafts`, use
+`version BIGINT NOT NULL DEFAULT 1`.
 The API validates a strong `If-Match` ETag against the current version before
 mutation and increments the version on success. `medical_record_versions` is
 append-only/immutable and remains outside the OCC update path; its
@@ -625,6 +654,7 @@ idempotency_keys
 id
 tenant_id
 actor_id
+endpoint
 key
 request_hash
 status
@@ -637,7 +667,7 @@ expires_at
 Constraint:
 
 ```text
-UNIQUE(tenant_id, actor_id, key)
+UNIQUE(tenant_id, actor_id, endpoint, key)
 ```
 
 Rules:
@@ -1506,7 +1536,7 @@ medical_record_versions:
 UNIQUE(medical_record_id, version)
 
 idempotency_keys:
-UNIQUE(tenant_id, actor_id, key)
+UNIQUE(tenant_id, actor_id, endpoint, key)
 ```
 
 Appointment uniqueness requires scheduling-specific design and must account for duration/overlap.

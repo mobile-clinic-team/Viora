@@ -1,0 +1,6 @@
+{
+  "name": "tenant-application",
+  "projectType": "library",
+  "sourceRoot": "libs/tenant/application",
+  "tags": ["boundary:tenant-application", "scope:tenant", "type:application"]
+}

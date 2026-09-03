@@ -1818,3 +1818,39 @@ Human / Project Owner
 **Approved at:**
 
 2026-08-28
+
+---
+
+## TEN-001 — Canonical Tenant / Location Decisions
+
+**Status:** APPROVED
+
+**Decision owner:** Architecture Owner / Project Owner
+
+- `Tenant 1 -> N Location`; `Location.tenant_id` is immutable and Location
+  transfer is not supported by TEN-001.
+- Tenant deletion uses `RESTRICT` while Locations remain linked. Location
+  deletion is represented by `status = 'ARCHIVED'`; hard delete is not
+  exposed by TEN-001.
+- Location status is `ACTIVE | INACTIVE | ARCHIVED`, defaulting to `ACTIVE`.
+  Allowed transitions are `ACTIVE <-> INACTIVE`, `INACTIVE -> ARCHIVED`, and
+  `ACTIVE -> ARCHIVED` for a higher-privilege administrator. Status changes
+  use a dedicated transition operation and arbitrary client status changes are
+  forbidden. TEN-001 does not expose that operation yet.
+- Locations use FK `tenant_id -> tenants.id`, unique `(tenant_id, name)`,
+  indexes `(tenant_id, id)` and `(tenant_id, status)`, application
+  authorization, and tenant-scoped repository queries.
+- Tenant and Location mutable updates use `version BIGINT NOT NULL DEFAULT 1`,
+  strong `ETag`/`If-Match`, and `412 Precondition Failed` for stale updates.
+- Tenant PATCH allows only `name`. Future Location metadata mutation allows
+  only `name`, `address`, and `phone`; identity, ownership, timestamps, and
+  status are forbidden.
+- Location creation uses PLAT-001 idempotency with identity
+  `tenant_id + actor_id + endpoint + key`, canonical normalized-payload
+  fingerprinting, replay for the same fingerprint, `409` conflict for a
+  different fingerprint, 24-hour retention, and one coordinated transaction.
+  A failed transaction leaves the operation retryable.
+
+These decisions do not authorize implementation of a Location PATCH or status
+transition endpoint beyond the four TEN-001 endpoints already defined in the
+API contract.
