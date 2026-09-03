@@ -1,0 +1,6 @@
+{
+  "name": "patient-data-access",
+  "projectType": "library",
+  "sourceRoot": "libs/patient/data-access",
+  "tags": ["boundary:patient-data-access", "scope:patient", "type:data-access"]
+}
