@@ -532,8 +532,8 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | READY FOR PLAN APPROVAL |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | COMPLETED — MERGED TO MAIN |
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | COMPLETED — MERGED TO MAIN |
-| PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | READY |
-| PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | BLOCKED |
+| PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
+| PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | IN PROGRESS — CONTRACT/APPLICATION ONLY |
 | DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | BLOCKED |
 | APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | BLOCKED |
 | APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | BLOCKED |
@@ -583,6 +583,18 @@ application behavior, database migrations or a concrete database adapter,
 authorization policy beyond the existing shared boundary, audit integration,
 or any Clinical, Appointment, Doctor, or AI capability. Those remain in
 PAT-002 and their separately scoped dependent tasks.
+
+### PAT-002 Scope Boundary
+
+PAT-002 currently implements only Patient request contracts, application use
+cases, API-facing handler contracts, and deterministic synthetic tests. It
+uses the existing authorization and idempotency ports by dependency injection,
+with tenant scope required for every Patient operation.
+
+PAT-002 does not add a database adapter or migration, HTTP runtime, audit
+event contract or adapter, or approved value sets for Patient `sex` or
+`status`. Those string fields receive structural validation only; their
+clinical/business value sets remain an explicit owner decision.
 
 ## 25. Task Granularity
 

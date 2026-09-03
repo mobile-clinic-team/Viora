@@ -17,6 +17,11 @@ export interface PatientRepository {
   }): Promise<Patient | null>;
   listByTenant(input: {
     readonly tenantId: string;
+    readonly medicalRecordNumber?: string;
+    readonly fullName?: string;
+    readonly dateOfBirth?: string;
+    readonly phone?: string;
+    readonly email?: string;
     readonly limit: number;
     readonly cursor?: string;
   }): Promise<readonly Patient[]>;

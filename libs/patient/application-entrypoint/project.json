@@ -1,0 +1,6 @@
+{
+  "name": "patient-application-entrypoint",
+  "projectType": "library",
+  "sourceRoot": "libs/patient/application-entrypoint",
+  "tags": ["boundary:patient-application-entrypoint", "scope:patient", "type:entrypoint"]
+}
