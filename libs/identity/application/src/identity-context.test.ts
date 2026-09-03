@@ -19,7 +19,7 @@ const tenantAMembership: Membership = {
   id: 'membership-a',
   userId: 'user-a',
   tenantId: 'tenant-a',
-  role: 'STAFF',
+  role: 'DOCTOR',
   status: 'ACTIVE',
 };
 
