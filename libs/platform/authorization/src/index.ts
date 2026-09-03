@@ -38,6 +38,10 @@ const deny = (reason: Exclude<AuthorizationDecisionReason, 'ALLOW'>): Authorizat
 export function authorizeResourceAccess(
   request: AuthorizationRequest,
 ): AuthorizationDecision {
+  if (!request || !request.context) {
+    return deny('INVALID_CONTEXT');
+  }
+
   const { actor, tenant } = request.context;
   if (!actor || !tenant || !actor.userId.trim() || !actor.subject.trim()) {
     return deny('INVALID_CONTEXT');
@@ -51,7 +55,11 @@ export function authorizeResourceAccess(
     return deny('INVALID_CONTEXT');
   }
 
-  if (!request.resource.resourceId.trim() || !request.resource.tenantId.trim()) {
+  if (
+    !request.resource ||
+    !request.resource.resourceId.trim() ||
+    !request.resource.tenantId.trim()
+  ) {
     return deny('INVALID_RESOURCE');
   }
 
