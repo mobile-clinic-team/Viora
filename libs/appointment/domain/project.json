@@ -1,0 +1,6 @@
+{
+  "name": "appointment-domain",
+  "projectType": "library",
+  "sourceRoot": "libs/appointment/domain",
+  "tags": ["boundary:appointment-domain", "scope:appointment", "type:domain"]
+}

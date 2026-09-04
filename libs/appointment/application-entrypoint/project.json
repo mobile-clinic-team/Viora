@@ -1,0 +1,6 @@
+{
+  "name": "appointment-application-entrypoint",
+  "projectType": "library",
+  "sourceRoot": "libs/appointment/application-entrypoint",
+  "tags": ["boundary:appointment-application-entrypoint", "scope:appointment", "type:application-entrypoint"]
+}
