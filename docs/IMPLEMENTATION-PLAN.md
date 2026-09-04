@@ -527,8 +527,8 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | Task ID | Title | Phase | Owner | Dependencies | Status |
 |---|---|---:|---|---|---|
 | FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | APPROVED — DESIGN RECORDED |
-| FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN REVIEW |
-| FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN REVIEW |
+| FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN PROGRESS — ROOT TEST CONFIGURATION |
+| FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN PROGRESS — TEST GATE |
 | AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | READY FOR PLAN APPROVAL |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | COMPLETED — MERGED TO MAIN |
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | COMPLETED — MERGED TO MAIN |
