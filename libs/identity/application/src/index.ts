@@ -20,6 +20,30 @@ export interface ResolveIdentityContextInput {
   readonly requestedTenantId?: string;
 }
 
+async function resolveActiveUser(
+  store: IdentityContextStore,
+  subject: IdentitySubjectReference | null,
+): Promise<UserIdentity> {
+  if (!subject) throw new IdentityContextError('UNAUTHENTICATED');
+
+  try {
+    assertValidSubject(subject);
+  } catch {
+    throw new IdentityContextError('INVALID_IDENTITY');
+  }
+
+  const user = await store.findUserBySubject(subject);
+  if (!user) throw new IdentityContextError('UNAUTHENTICATED');
+
+  try {
+    assertActiveUser(user);
+  } catch {
+    throw new IdentityContextError('INVALID_IDENTITY');
+  }
+
+  return user;
+}
+
 export class IdentityContextError extends Error {
   public readonly code:
     | 'UNAUTHENTICATED'
@@ -44,26 +68,7 @@ export async function resolveIdentityContext(
   store: IdentityContextStore,
   input: ResolveIdentityContextInput,
 ): Promise<IdentityContext> {
-  if (!input.subject) {
-    throw new IdentityContextError('UNAUTHENTICATED');
-  }
-
-  try {
-    assertValidSubject(input.subject);
-  } catch {
-    throw new IdentityContextError('INVALID_IDENTITY');
-  }
-
-  const user = await store.findUserBySubject(input.subject);
-  if (!user) {
-    throw new IdentityContextError('UNAUTHENTICATED');
-  }
-
-  try {
-    assertActiveUser(user);
-  } catch {
-    throw new IdentityContextError('INVALID_IDENTITY');
-  }
+  const user = await resolveActiveUser(store, input.subject);
 
   const memberships = (await store.findMembershipsByUser(user.id)).filter(
     (membership) => membership.status === 'ACTIVE',
@@ -102,4 +107,14 @@ export async function resolveIdentityContext(
       membershipId: membership.id,
     },
   };
+}
+
+export async function listActiveMemberships(
+  store: IdentityContextStore,
+  subject: IdentitySubjectReference | null,
+): Promise<readonly Membership[]> {
+  const user = await resolveActiveUser(store, subject);
+  return (await store.findMembershipsByUser(user.id)).filter(
+    (membership) => membership.status === 'ACTIVE',
+  );
 }
