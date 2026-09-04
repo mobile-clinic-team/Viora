@@ -1,0 +1,6 @@
+{
+  "name": "doctor-domain",
+  "projectType": "library",
+  "sourceRoot": "libs/doctor/domain",
+  "tags": ["boundary:doctor-domain", "scope:doctor", "type:domain"]
+}

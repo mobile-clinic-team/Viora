@@ -1,0 +1,6 @@
+{
+  "name": "doctor-data-access",
+  "projectType": "library",
+  "sourceRoot": "libs/doctor/data-access",
+  "tags": ["boundary:doctor-data-access", "scope:doctor", "type:data-access"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "doctor-application-entrypoint",
+  "projectType": "library",
+  "sourceRoot": "libs/doctor/application-entrypoint",
+  "tags": ["boundary:doctor-application-entrypoint", "scope:doctor", "type:application-entrypoint"]
+}
