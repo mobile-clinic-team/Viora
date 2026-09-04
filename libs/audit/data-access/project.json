@@ -1,0 +1,6 @@
+{
+  "name": "audit-data-access",
+  "projectType": "library",
+  "sourceRoot": "libs/audit/data-access",
+  "tags": ["boundary:audit-data-access", "scope:audit", "type:data-access"]
+}
