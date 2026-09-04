@@ -16,7 +16,7 @@ test('migration 005 defines tenant-scoped immutable audit evidence', async () =>
     "result IN ('SUCCESS', 'DENIED', 'FAILURE')",
     "metadata JSONB NOT NULL DEFAULT '{}'::jsonb",
     'audit_events (tenant_id, created_at, id)',
-    'BEFORE UPDATE OR DELETE ON audit_events',
+    'BEFORE UPDATE OR DELETE OR TRUNCATE ON audit_events',
   ]) {
     assert.match(sql, new RegExp(fragment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
