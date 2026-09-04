@@ -1,0 +1,6 @@
+{
+  "name": "clinical-application-entrypoint",
+  "projectType": "library",
+  "sourceRoot": "libs/clinical/application-entrypoint",
+  "tags": ["boundary:clinical-application-entrypoint", "scope:clinical", "type:entrypoint"]
+}

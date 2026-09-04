@@ -1,0 +1,6 @@
+{
+  "name": "clinical-data-access",
+  "projectType": "library",
+  "sourceRoot": "libs/clinical/data-access",
+  "tags": ["boundary:clinical-data-access", "scope:clinical", "type:data-access"]
+}

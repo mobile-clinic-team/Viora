@@ -1,0 +1,6 @@
+{
+  "name": "clinical-application",
+  "projectType": "library",
+  "sourceRoot": "libs/clinical/application",
+  "tags": ["boundary:clinical-application", "scope:clinical", "type:application"]
+}
