@@ -78,6 +78,11 @@ export async function runMigrations(
     const applied = new Map(appliedResult.rows.map((row) => [row.version, row.checksum]));
 
     for (const migration of ordered) {
+      if (/\b(?:BEGIN|COMMIT|ROLLBACK)\s*;/i.test(migration.sql)) {
+        throw new Error(
+          `migration ${migration.version} contains transaction control; the runner owns the transaction`,
+        );
+      }
       const checksum = checksumMigration(migration.sql);
       const existing = applied.get(migration.version);
       if (existing !== undefined) {

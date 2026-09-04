@@ -59,3 +59,13 @@ test('rolls back when a recorded checksum differs', async () => {
   await assert.rejects(() => runMigrations(database, [migration('001', 'changed;')]), /checksum mismatch/);
   assert.equal(database.calls.slice(before).at(-1)?.sql, 'ROLLBACK');
 });
+
+test('rejects migrations that try to manage their own transaction', async () => {
+  const database = new FakeDatabase();
+
+  await assert.rejects(
+    () => runMigrations(database, [migration('005', 'BEGIN; CREATE TABLE audit_events (id UUID); COMMIT;')]),
+    /runner owns the transaction/,
+  );
+  assert.equal(database.calls.at(-1)?.sql, 'ROLLBACK');
+});
