@@ -1,0 +1,6 @@
+{
+  "name": "doctor-application",
+  "projectType": "library",
+  "sourceRoot": "libs/doctor/application",
+  "tags": ["boundary:doctor-application", "scope:doctor", "type:application"]
+}

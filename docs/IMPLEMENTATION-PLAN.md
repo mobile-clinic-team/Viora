@@ -534,7 +534,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | COMPLETED — MERGED TO MAIN |
 | PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
 | PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | IN PROGRESS — CONTRACT/APPLICATION ONLY |
-| DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | BLOCKED |
+| DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | IN PROGRESS — CONTRACT/DOMAIN/APPLICATION SLICE |
 | APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | BLOCKED |
 | APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | BLOCKED |
 | APPT-003 | Implement appointment idempotency/double-booking tests | 4 | C/A | APPT-001, PLAT-001, concurrency decision | BLOCKED |
