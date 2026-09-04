@@ -534,14 +534,14 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | COMPLETED — MERGED TO MAIN |
 | PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
 | PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | IN PROGRESS — CONTRACT/APPLICATION ONLY |
-| DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | IN PROGRESS — CONTRACT/DOMAIN/APPLICATION SLICE |
-| APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | BLOCKED |
+| DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
+| APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | IN PROGRESS — CONTRACT/DOMAIN/APPLICATION SLICE |
 | APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | BLOCKED |
 | APPT-003 | Implement appointment idempotency/double-booking tests | 4 | C/A | APPT-001, PLAT-001, concurrency decision | BLOCKED |
 | CLIN-001 | Implement encounter and clinical record/version model | 4 | B | PAT-002, APPT-001 | BLOCKED |
 | CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | BLOCKED |
 | AUD-001 | Implement audit event contract and feature integration | 2-4 | A/all | AUTH-001, migration 005 | BLOCKED |
-| PLAT-001 | Implement idempotency and outbox shared contracts/schema integration | 2-4 | A/all | AUTH-001, migrations 004/008 | BLOCKED |
+| PLAT-001 | Implement idempotency and outbox shared contracts/schema integration | 2-4 | A/all | AUTH-001, migrations 004/008 | COMPLETED — CONTRACTS MERGED TO MAIN |
 | AI-001 | Implement AI Gateway/tool contract boundary | 5 | D | AUTH-002, AUD-001, AI decisions | BLOCKED |
 | RAG-001 | Implement approved retrieval abstraction and isolation tests | 5-6 | D | AI-001, embedding/governance decisions | BLOCKED |
 | AI-002 | Implement read-only Patient/Clinical tools | 6 | D/B | AI-001, PAT-002, CLIN-001 | BLOCKED |

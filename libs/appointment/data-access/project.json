@@ -1,0 +1,6 @@
+{
+  "name": "appointment-data-access",
+  "projectType": "library",
+  "sourceRoot": "libs/appointment/data-access",
+  "tags": ["boundary:appointment-data-access", "scope:appointment", "type:data-access"]
+}
