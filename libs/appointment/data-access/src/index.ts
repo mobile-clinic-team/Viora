@@ -1,4 +1,4 @@
-import type { AppointmentListQuery } from '../../contracts/src/index.ts';
+import type { AppointmentAvailabilityQuery, AppointmentAvailabilitySlot, AppointmentListQuery } from '../../contracts/src/index.ts';
 import type { Appointment } from '../../domain/src/index.ts';
 
 export interface AppointmentRepository {
@@ -15,4 +15,15 @@ export interface AppointmentRepository {
     readonly changes: Partial<Pick<Appointment, 'locationId' | 'doctorId' | 'startTime' | 'endTime' | 'reason' | 'notes'>>;
     readonly expectedVersion: bigint;
   }): Promise<Appointment | null>;
+  updateStatus(input: {
+    readonly tenantId: string;
+    readonly appointmentId: string;
+    readonly status: Appointment['status'];
+    readonly checkedInAt?: string | null;
+    readonly expectedVersion: bigint;
+  }): Promise<Appointment | null>;
+}
+
+export interface AppointmentAvailabilityRepository {
+  listAvailableSlots(input: AppointmentAvailabilityQuery & { readonly tenantId: string }): Promise<readonly AppointmentAvailabilitySlot[]>;
 }

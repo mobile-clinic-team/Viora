@@ -535,8 +535,8 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
 | PAT-002 | Implement Patient API create/read/update/search | 3 | B | PAT-001 | IN PROGRESS — CONTRACT/APPLICATION ONLY |
 | DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
-| APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | IN PROGRESS — CONTRACT/DOMAIN/APPLICATION SLICE |
-| APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | BLOCKED |
+| APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | COMPLETED — CONTRACT/DOMAIN/APPLICATION SLICE MERGED TO MAIN |
+| APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | IN PROGRESS — STATUS TRANSITION SLICE |
 | APPT-003 | Implement appointment idempotency/double-booking tests | 4 | C/A | APPT-001, PLAT-001, concurrency decision | BLOCKED |
 | CLIN-001 | Implement encounter and clinical record/version model | 4 | B | PAT-002, APPT-001 | BLOCKED |
 | CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | BLOCKED |

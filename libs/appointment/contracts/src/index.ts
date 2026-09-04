@@ -36,3 +36,20 @@ export interface AppointmentListQuery {
   readonly limit?: number;
   readonly cursor?: string;
 }
+
+export interface AppointmentAvailabilityQuery {
+  readonly doctorId: string;
+  readonly locationId?: string;
+  readonly from: string;
+  readonly to: string;
+  readonly limit?: number;
+  readonly cursor?: string;
+}
+
+export interface AppointmentAvailabilitySlot {
+  readonly tenantId: string;
+  readonly doctorId: string;
+  readonly locationId: string;
+  readonly startTime: string;
+  readonly endTime: string;
+}
