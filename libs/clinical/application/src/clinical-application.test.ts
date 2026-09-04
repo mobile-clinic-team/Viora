@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import test from 'node:test';
-import { createInitialMedicalRecord, createEncounter, getEncounter, ClinicalApplicationError, type ClinicalApplicationDependencies } from './index.ts';
+import { amendMedicalRecord, createInitialMedicalRecord, createEncounter, finalizeMedicalRecord, getEncounter, reviewMedicalRecord, ClinicalApplicationError, type ClinicalApplicationDependencies } from './index.ts';
 import type { Encounter, ClinicalRecordWithVersion, MedicalRecord, MedicalRecordVersion } from '../../domain/src/index.ts';
 import { createAuthenticatedRequestContext, createUnauthenticatedRequestContext } from '../../../platform/context/src/index.ts';
 
@@ -10,7 +10,9 @@ const encounter: Encounter = { encounterId: 'encounter-a', tenantId, patientId: 
 const record: MedicalRecord = { medicalRecordId: 'record-a', tenantId, patientId: 'patient-a', encounterId: 'encounter-a', status: 'DRAFT', currentVersion: 1n, createdAt: encounter.createdAt, updatedAt: encounter.updatedAt };
 const version: MedicalRecordVersion = { versionId: 'version-a', medicalRecordId: record.medicalRecordId, version: 1n, diagnosis: 'routine', symptoms: 'none', clinicalNotes: 'note', treatmentPlan: 'follow-up', createdBy: 'doctor-a', amendmentReason: null, createdAt: encounter.createdAt };
 
-function dependencies(begin: 'STARTED' | 'REPLAY_ENCOUNTER' | 'REPLAY_RECORD' | 'CONFLICT' = 'STARTED'): ClinicalApplicationDependencies {
+function dependencies(begin: 'STARTED' | 'REPLAY_ENCOUNTER' | 'REPLAY_RECORD' | 'CONFLICT' = 'STARTED', status: MedicalRecord['status'] = 'DRAFT'): ClinicalApplicationDependencies {
+  const currentRecord = { ...record, status, currentVersion: status === 'AMENDED' ? 2n : 1n };
+  const currentVersion = { ...version, version: currentRecord.currentVersion, amendmentReason: status === 'AMENDED' ? 'correction' : null };
   return {
     encounters: {
       async create() { return encounter; },
@@ -18,8 +20,11 @@ function dependencies(begin: 'STARTED' | 'REPLAY_ENCOUNTER' | 'REPLAY_RECORD' | 
     },
     records: {
       async createWithInitialVersion() { return { record, version }; },
-      async findByEncounter(input) { return input.tenantId === tenantId && input.encounterId === encounter.encounterId ? record : null; },
-      async findCurrentVersion(input) { return input.tenantId === tenantId && input.medicalRecordId === record.medicalRecordId ? version : null; },
+      async findById(input) { return input.tenantId === tenantId && input.medicalRecordId === record.medicalRecordId ? currentRecord : null; },
+      async findByEncounter(input) { return input.tenantId === tenantId && input.encounterId === encounter.encounterId ? currentRecord : null; },
+      async findCurrentVersion(input) { return input.tenantId === tenantId && input.medicalRecordId === record.medicalRecordId ? currentVersion : null; },
+      async transition(input) { return { ...currentRecord, status: input.to }; },
+      async createAmendment() { return { record: { ...currentRecord, status: 'AMENDED', currentVersion: currentRecord.currentVersion + 1n }, version: { ...currentVersion, version: currentRecord.currentVersion + 1n, amendmentReason: 'correction' } }; },
     },
     idempotency: {
       async begin(input) { return { kind: begin === 'CONFLICT' ? 'CONFLICT' as const : begin.startsWith('REPLAY') ? 'REPLAY' as const : 'STARTED' as const, record: { ...input, status: 'SUCCEEDED' as const, responseCode: 201, responseReference: begin === 'REPLAY_ENCOUNTER' ? encounter.encounterId : begin === 'REPLAY_RECORD' ? record.medicalRecordId : null, createdAt: new Date(), expiresAt: new Date() } }; },
@@ -59,4 +64,17 @@ test('creates and replays the first draft medical record version', async () => {
 test('rejects empty clinical content and unknown fields', async () => {
   await assert.rejects(createInitialMedicalRecord(dependencies(), context, encounter.encounterId, { ...content, clinicalNotes: '' }, 'key-a'), (error: unknown) => error instanceof ClinicalApplicationError && error.code === 'VALIDATION_ERROR');
   await assert.rejects(createInitialMedicalRecord(dependencies(), context, encounter.encounterId, { ...content, extra: 'nope' } as typeof content, 'key-a'), (error: unknown) => error instanceof ClinicalApplicationError && error.code === 'VALIDATION_ERROR');
+});
+
+test('enforces DRAFT to IN_REVIEW to FINALIZED transitions', async () => {
+  assert.equal((await reviewMedicalRecord(dependencies(), context, record.medicalRecordId, 'review-key')).status, 'IN_REVIEW');
+  assert.equal((await finalizeMedicalRecord(dependencies('STARTED', 'IN_REVIEW'), context, record.medicalRecordId, 'finalize-key')).status, 'FINALIZED');
+  await assert.rejects(reviewMedicalRecord(dependencies('STARTED', 'FINALIZED'), context, record.medicalRecordId, 'bad-key'), (error: unknown) => error instanceof ClinicalApplicationError && error.code === 'VALIDATION_ERROR');
+});
+
+test('creates an amendment version only from a finalized current version', async () => {
+  const amended = await amendMedicalRecord(dependencies('STARTED', 'FINALIZED'), context, record.medicalRecordId, { ...content, amendmentReason: 'Corrected diagnosis' }, 'amend-key');
+  assert.equal(amended.record.status, 'AMENDED');
+  assert.equal(amended.version.version, 2n);
+  await assert.rejects(amendMedicalRecord(dependencies(), context, record.medicalRecordId, { ...content, amendmentReason: 'reason' }, 'bad-key'), (error: unknown) => error instanceof ClinicalApplicationError && error.code === 'VALIDATION_ERROR');
 });

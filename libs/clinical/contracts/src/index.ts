@@ -14,3 +14,7 @@ export interface ClinicalRecordCreateRequest {
   readonly clinicalNotes: string;
   readonly treatmentPlan: string;
 }
+
+export interface ClinicalRecordAmendmentRequest extends ClinicalRecordCreateRequest {
+  readonly amendmentReason: string;
+}
