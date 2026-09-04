@@ -1,8 +1,6 @@
 -- AUD-001 / migration 005
 -- Additive, transactional PostgreSQL migration for immutable audit evidence.
 
-BEGIN;
-
 CREATE TABLE audit_events (
   id UUID PRIMARY KEY,
   tenant_id UUID NOT NULL REFERENCES tenants (id) ON DELETE RESTRICT,
@@ -40,4 +38,3 @@ BEFORE UPDATE OR DELETE OR TRUNCATE ON audit_events
 FOR EACH STATEMENT
 EXECUTE FUNCTION reject_audit_event_mutation();
 
-COMMIT;

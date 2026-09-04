@@ -23,9 +23,9 @@ test('migration 005 defines tenant-scoped immutable audit evidence', async () =>
   }
 });
 
-test('migration 005 is transactional and does not add resource foreign keys', async () => {
+test('migration 005 delegates transaction ownership to the migration runner', async () => {
   const sql = await readFile(migrationPath, 'utf8');
 
-  assert.match(sql, /BEGIN;[\s\S]*COMMIT;\s*$/);
+  assert.doesNotMatch(sql, /\b(?:BEGIN|COMMIT|ROLLBACK)\s*;/);
   assert.doesNotMatch(sql, /REFERENCES\s+patients|REFERENCES\s+medical_records/i);
 });
