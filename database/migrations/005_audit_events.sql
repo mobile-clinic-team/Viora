@@ -37,4 +37,3 @@ CREATE TRIGGER audit_events_immutable_trigger
 BEFORE UPDATE OR DELETE OR TRUNCATE ON audit_events
 FOR EACH STATEMENT
 EXECUTE FUNCTION reject_audit_event_mutation();
-
