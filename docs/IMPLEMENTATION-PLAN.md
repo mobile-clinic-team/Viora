@@ -527,9 +527,9 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | Task ID | Title | Phase | Owner | Dependencies | Status |
 |---|---|---:|---|---|---|
 | FOUND-001 | Approve Nx project graph and public boundaries | 0 | Team/A | DEV-001 | APPROVED — DESIGN RECORDED |
-| FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | IN PROGRESS — ROOT TEST CONFIGURATION |
-| FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | IN PROGRESS — TEST GATE |
-| AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | READY FOR PLAN APPROVAL |
+| FOUND-002 | Establish local/test configuration and secret rules | 0-1 | A | SEC-007/DEV-009 | COMPLETED — ROOT TEST CONFIGURATION MERGED TO MAIN |
+| FOUND-003 | Establish CI check inventory and PR gates | 0 | A/C | DEV-002 | COMPLETED — CI/PR GATES MERGED TO MAIN |
+| AUTH-001 | Implement provider-neutral user/membership/tenant context boundary | 2 | A | FOUND-001, approved identity-context decision | COMPLETED — IDENTITY/TENANT CONTEXT MERGED TO MAIN |
 | AUTH-002 | Implement authorization and IDOR policy tests | 2 | A | AUTH-001, permission matrix | COMPLETED — MERGED TO MAIN |
 | TEN-001 | Implement tenant/location APIs and tests | 2 | A | AUTH-001/002, canonical TEN-001 ADR-01..06 | COMPLETED — MERGED TO MAIN |
 | PAT-001 | Implement tenant-scoped Patient types/repository | 3 | B | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
@@ -537,10 +537,10 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | DOC-001 | Implement Doctor/Department/Shift capabilities | 3 | C | AUTH-002, TEN-001 | COMPLETED — MERGED TO MAIN |
 | APPT-001 | Implement appointment create/list/read/update/cancel | 4 | C | PAT-002, DOC-001, PLAT-001, pagination decision | COMPLETED — CONTRACT/DOMAIN/APPLICATION SLICE MERGED TO MAIN |
 | APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | COMPLETED — AVAILABILITY/STATUS TRANSITION SLICE MERGED TO MAIN |
-| APPT-003 | Implement appointment idempotency/double-booking tests | 4 | C/A | APPT-001, PLAT-001, concurrency decision | IN PROGRESS — IDEMPOTENCY/CONFLICT TEST SLICE |
-| CLIN-001 | Implement encounter and clinical record/version model | 4 | B | PAT-002, APPT-001 | IN PROGRESS — ENCOUNTER/INITIAL DRAFT SLICE |
-| CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | IN PROGRESS — REVIEW/FINALIZE/AMENDMENT SLICE |
-| AUD-001 | Implement audit event contract and feature integration | 2-4 | A/all | AUTH-001, migration 005 | IN PROGRESS — CONTRACT/SINK BOUNDARY |
+| APPT-003 | Implement appointment idempotency/double-booking tests | 4 | C/A | APPT-001, PLAT-001, concurrency decision | COMPLETED — IDEMPOTENCY/CONFLICT TEST SLICE MERGED TO MAIN |
+| CLIN-001 | Implement encounter and clinical record/version model | 4 | B | PAT-002, APPT-001 | COMPLETED — ENCOUNTER/INITIAL DRAFT SLICE MERGED TO MAIN |
+| CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | COMPLETED — REVIEW/FINALIZE/AMENDMENT SLICE MERGED TO MAIN |
+| AUD-001 | Implement audit event contract and feature integration | 2-4 | A/all | AUTH-001, migration 005 | IN PROGRESS — MIGRATION 005 DRAFT PR #67 |
 | PLAT-001 | Implement idempotency and outbox shared contracts/schema integration | 2-4 | A/all | AUTH-001, migrations 004/008 | COMPLETED — CONTRACTS MERGED TO MAIN |
 | AI-001 | Implement AI Gateway/tool contract boundary | 5 | D | AUTH-002, AUD-001, AI decisions | BLOCKED |
 | RAG-001 | Implement approved retrieval abstraction and isolation tests | 5-6 | D | AI-001, embedding/governance decisions | BLOCKED |

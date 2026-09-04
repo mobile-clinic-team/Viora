@@ -1372,6 +1372,7 @@ resource_type
 resource_id
 result
 request_id
+correlation_id
 metadata
 created_at
 ```
@@ -1394,6 +1395,7 @@ resource_type: medical_record
 resource_id: record_789
 result: SUCCESS
 request_id: req_abc
+correlation_id: corr_abc
 ```
 
 Do NOT store:
