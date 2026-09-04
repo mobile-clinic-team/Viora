@@ -18,6 +18,15 @@ export interface Appointment {
   readonly updatedAt: string;
 }
 
+export function occupiesSchedulingInterval(status: Appointment['status']): boolean {
+  return status !== 'CANCELLED' && status !== 'NO_SHOW';
+}
+
+export function appointmentsOverlap(left: Pick<Appointment, 'doctorId' | 'startTime' | 'endTime' | 'status'>, right: Pick<Appointment, 'doctorId' | 'startTime' | 'endTime' | 'status'>): boolean {
+  if (left.doctorId !== right.doctorId || !occupiesSchedulingInterval(left.status) || !occupiesSchedulingInterval(right.status)) return false;
+  return Date.parse(left.startTime) < Date.parse(right.endTime) && Date.parse(right.startTime) < Date.parse(left.endTime);
+}
+
 export function assertAppointmentTimeRange(startTime: string, endTime: string): void {
   const start = Date.parse(startTime);
   const end = Date.parse(endTime);

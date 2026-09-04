@@ -1,6 +1,14 @@
 import type { AppointmentAvailabilityQuery, AppointmentAvailabilitySlot, AppointmentListQuery } from '../../contracts/src/index.ts';
 import type { Appointment } from '../../domain/src/index.ts';
 
+/** Raised by the scheduling adapter when the database constraint rejects an overlap. */
+export class AppointmentSchedulingConflictError extends Error {
+  public constructor(message = 'appointment scheduling conflict') {
+    super(message);
+    this.name = 'AppointmentSchedulingConflictError';
+  }
+}
+
 export interface AppointmentRepository {
   findById(input: { readonly tenantId: string; readonly appointmentId: string }): Promise<Appointment | null>;
   listByTenant(input: AppointmentListQuery & { readonly tenantId: string }): Promise<readonly Appointment[]>;

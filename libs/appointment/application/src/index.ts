@@ -6,7 +6,7 @@ import type {
 } from '../../contracts/src/index.ts';
 import type { Appointment } from '../../domain/src/index.ts';
 import { assertAppointmentStatusTransition, assertAppointmentTimeRange } from '../../domain/src/index.ts';
-import type { AppointmentAvailabilityRepository, AppointmentRepository } from '../../data-access/src/index.ts';
+import { AppointmentSchedulingConflictError, type AppointmentAvailabilityRepository, type AppointmentRepository } from '../../data-access/src/index.ts';
 import type { RequestContext } from '../../../platform/context/src/index.ts';
 import { authorizeResourceAccess } from '../../../platform/authorization/src/index.ts';
 import { assertValidIdempotencyKey, hashPayload, type IdempotencyStore } from '../../../platform/idempotency/src/index.ts';
@@ -25,7 +25,7 @@ export interface AppointmentApplicationDependencies {
 }
 
 export class AppointmentApplicationError extends Error {
-  public readonly code: 'FORBIDDEN' | 'NOT_FOUND' | 'PRECONDITION_FAILED' | 'VALIDATION_ERROR' | 'IDEMPOTENCY_CONFLICT';
+  public readonly code: 'FORBIDDEN' | 'NOT_FOUND' | 'PRECONDITION_FAILED' | 'VALIDATION_ERROR' | 'IDEMPOTENCY_CONFLICT' | 'CONFLICT';
   public constructor(code: AppointmentApplicationError['code']) {
     super(code);
     this.name = 'AppointmentApplicationError';
@@ -115,6 +115,10 @@ export async function createAppointment(deps: AppointmentApplicationDependencies
     await deps.idempotency.complete({ ...identity, key: idempotencyKey, responseCode: 201, responseReference: created.id });
     return created;
   } catch (error) {
+    if (error instanceof AppointmentSchedulingConflictError) {
+      await deps.idempotency.fail({ ...identity, key: idempotencyKey, responseCode: 409 });
+      throw new AppointmentApplicationError('CONFLICT');
+    }
     await deps.idempotency.fail({ ...identity, key: idempotencyKey, responseCode: 500 });
     throw error;
   }
