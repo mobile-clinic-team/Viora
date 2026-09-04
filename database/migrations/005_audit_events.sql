@@ -12,7 +12,7 @@ CREATE TABLE audit_events (
   resource_id TEXT NOT NULL CHECK (btrim(resource_id) <> ''),
   result TEXT NOT NULL CHECK (result IN ('SUCCESS', 'DENIED', 'FAILURE')),
   request_id TEXT NOT NULL CHECK (btrim(request_id) <> ''),
-  correlation_id TEXT NOT NULL CHECK (btrim(correlation_id) <> ''),
+  correlation_id VARCHAR(64) NOT NULL CHECK (btrim(correlation_id) <> ''),
   metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -22,6 +22,9 @@ CREATE INDEX audit_events_tenant_created_id_idx
 
 CREATE INDEX audit_events_tenant_actor_created_idx
   ON audit_events (tenant_id, actor_id, created_at);
+
+CREATE INDEX audit_events_tenant_correlation_idx
+  ON audit_events (tenant_id, correlation_id);
 
 CREATE FUNCTION reject_audit_event_mutation()
 RETURNS TRIGGER

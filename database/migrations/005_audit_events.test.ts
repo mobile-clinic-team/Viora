@@ -12,10 +12,11 @@ test('migration 005 defines tenant-scoped immutable audit evidence', async () =>
     'id UUID PRIMARY KEY',
     'tenant_id UUID NOT NULL REFERENCES tenants (id) ON DELETE RESTRICT',
     'actor_id UUID NOT NULL REFERENCES users (id) ON DELETE RESTRICT',
-    'correlation_id TEXT NOT NULL',
+    'correlation_id VARCHAR(64) NOT NULL',
     "result IN ('SUCCESS', 'DENIED', 'FAILURE')",
     "metadata JSONB NOT NULL DEFAULT '{}'::jsonb",
     'audit_events (tenant_id, created_at, id)',
+    'audit_events (tenant_id, correlation_id)',
     'BEFORE UPDATE OR DELETE OR TRUNCATE ON audit_events',
   ]) {
     assert.match(sql, new RegExp(fragment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
