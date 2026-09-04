@@ -1,4 +1,5 @@
 import type { AuditEvent, AuditEventInput } from '../../../audit/contracts/src/index.ts';
+import type { RequestContext } from '../../context/src/index.ts';
 
 export interface AuditSink {
   append(event: AuditEvent): Promise<void>;
@@ -14,6 +15,32 @@ export class AuditValidationError extends Error {
 function text(value: unknown, field: string): string {
   if (typeof value !== 'string' || !value.trim()) throw new AuditValidationError(`${field} is required`);
   return value.trim();
+}
+
+export interface RequestAuditInput {
+  readonly id: string;
+  readonly action: string;
+  readonly resourceType: string;
+  readonly resourceId: string;
+  readonly result: AuditEvent['result'];
+  readonly metadata: Readonly<Record<string, string | number | boolean | null>>;
+}
+
+export function buildAuditEventInput(
+  context: RequestContext,
+  input: RequestAuditInput,
+): AuditEventInput {
+  if (!context.actor || !context.tenant) {
+    throw new AuditValidationError('authenticated request context is required');
+  }
+
+  return {
+    ...input,
+    tenantId: context.tenant.tenantId,
+    actorId: context.actor.userId,
+    requestId: context.requestId,
+    correlationId: context.correlationId,
+  };
 }
 
 export function buildAuditEvent(input: AuditEventInput, now = new Date()): AuditEvent {
