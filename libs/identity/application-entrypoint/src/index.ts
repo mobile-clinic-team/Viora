@@ -1,5 +1,6 @@
 export {
   IdentityContextError,
+  listActiveMemberships,
   resolveIdentityContext,
 } from '../../application/src/index.ts';
 export type {
