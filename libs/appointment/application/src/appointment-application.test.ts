@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import test from 'node:test';
-import { createAppointment, listAppointments, type AppointmentApplicationDependencies } from './index.ts';
+import { checkInAppointment, createAppointment, listAppointments, markAppointmentNoShow, type AppointmentApplicationDependencies } from './index.ts';
 import { createAuthenticatedRequestContext } from '../../../platform/context/src/index.ts';
 
 const tenantId = '11111111-1111-4111-8111-111111111111';
@@ -20,6 +20,7 @@ function deps(begin: 'STARTED' | 'REPLAY' = 'STARTED'): AppointmentApplicationDe
       async listByTenant(input) { return input.tenantId === tenantId ? [appointment] : []; },
       async create() { return appointment; },
       async update() { return appointment; },
+      async updateStatus() { return appointment; },
     },
     idempotency: {
       async begin(input) { return { kind: begin, record: { ...input, status: 'SUCCEEDED' as const, responseCode: 201, responseReference: begin === 'REPLAY' ? appointment.id : null, createdAt: new Date(), expiresAt: new Date() } }; },
@@ -44,4 +45,10 @@ test('replays an idempotent appointment instead of creating a duplicate', async 
 test('lists only appointments for the active tenant', async () => {
   const result = await listAppointments(deps(), context, { limit: 10 });
   assert.equal(result[0]?.tenantId, tenantId);
+});
+
+test('requires a current version and valid lifecycle transition for check-in', async () => {
+  const checkedIn = await checkInAppointment(deps(), context, appointment.id, '"1"');
+  assert.equal(checkedIn.id, appointment.id);
+  await assert.rejects(markAppointmentNoShow(deps(), context, appointment.id, '"1"'));
 });

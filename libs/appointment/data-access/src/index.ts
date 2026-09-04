@@ -15,4 +15,11 @@ export interface AppointmentRepository {
     readonly changes: Partial<Pick<Appointment, 'locationId' | 'doctorId' | 'startTime' | 'endTime' | 'reason' | 'notes'>>;
     readonly expectedVersion: bigint;
   }): Promise<Appointment | null>;
+  updateStatus(input: {
+    readonly tenantId: string;
+    readonly appointmentId: string;
+    readonly status: Appointment['status'];
+    readonly checkedInAt?: string | null;
+    readonly expectedVersion: bigint;
+  }): Promise<Appointment | null>;
 }
