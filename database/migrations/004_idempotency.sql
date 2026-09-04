@@ -1,8 +1,6 @@
 -- AUD-001 foundation / migration 004
 -- Retry identity. Payload comparison and replay/conflict mapping stay in the repository.
 
-BEGIN;
-
 CREATE TYPE idempotency_status AS ENUM ('PROCESSING', 'SUCCEEDED', 'FAILED');
 
 CREATE TABLE idempotency_keys (
@@ -20,5 +18,3 @@ CREATE TABLE idempotency_keys (
   CONSTRAINT idempotency_keys_identity_key UNIQUE (tenant_id, actor_id, endpoint, key),
   CONSTRAINT idempotency_keys_hash_format CHECK (request_hash ~ '^[0-9a-f]{64}$')
 );
-
-COMMIT;

@@ -14,8 +14,8 @@ test('foundation migrations are ordered, transactional, and dependency-shaped', 
 
   for (const file of files) {
     const sql = await migration(file);
-    assert.match(sql, /BEGIN;/);
-    assert.match(sql, /COMMIT;/);
+    assert.doesNotMatch(sql, /\bBEGIN;/);
+    assert.doesNotMatch(sql, /\bCOMMIT;/);
   }
 
   assert.match(await migration('001_extensions.sql'), /CREATE EXTENSION IF NOT EXISTS btree_gist/);
