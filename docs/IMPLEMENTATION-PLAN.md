@@ -539,7 +539,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | APPT-002 | Implement availability/check-in/status transitions and explicit `NO_SHOW` command | 4 | C | APPT-001, BLOCK-002 | COMPLETED — AVAILABILITY/STATUS TRANSITION SLICE MERGED TO MAIN |
 | APPT-003 | Implement appointment idempotency/double-booking tests | 4 | C/A | APPT-001, PLAT-001, concurrency decision | IN PROGRESS — IDEMPOTENCY/CONFLICT TEST SLICE |
 | CLIN-001 | Implement encounter and clinical record/version model | 4 | B | PAT-002, APPT-001 | IN PROGRESS — ENCOUNTER/INITIAL DRAFT SLICE |
-| CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | BLOCKED |
+| CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | IN PROGRESS — REVIEW/FINALIZE/AMENDMENT SLICE |
 | AUD-001 | Implement audit event contract and feature integration | 2-4 | A/all | AUTH-001, migration 005 | BLOCKED |
 | PLAT-001 | Implement idempotency and outbox shared contracts/schema integration | 2-4 | A/all | AUTH-001, migrations 004/008 | COMPLETED — CONTRACTS MERGED TO MAIN |
 | AI-001 | Implement AI Gateway/tool contract boundary | 5 | D | AUTH-002, AUD-001, AI decisions | BLOCKED |

@@ -51,3 +51,13 @@ export function assertDraftVersion(version: MedicalRecordVersion, record: Medica
     throw new Error('invalid initial medical record version');
   }
 }
+
+export function assertMedicalRecordTransition(from: MedicalRecordStatus, to: MedicalRecordStatus): void {
+  if (!((from === 'DRAFT' && to === 'IN_REVIEW') || (from === 'IN_REVIEW' && to === 'FINALIZED'))) {
+    throw new Error('invalid medical record transition');
+  }
+}
+
+export function assertAmendmentSource(record: MedicalRecord, version: MedicalRecordVersion): void {
+  if (record.status !== 'FINALIZED' || record.currentVersion !== version.version) throw new Error('only the finalized current version can be amended');
+}
