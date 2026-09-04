@@ -1,4 +1,4 @@
-import type { AppointmentListQuery } from '../../contracts/src/index.ts';
+import type { AppointmentAvailabilityQuery, AppointmentAvailabilitySlot, AppointmentListQuery } from '../../contracts/src/index.ts';
 import type { Appointment } from '../../domain/src/index.ts';
 
 export interface AppointmentRepository {
@@ -22,4 +22,8 @@ export interface AppointmentRepository {
     readonly checkedInAt?: string | null;
     readonly expectedVersion: bigint;
   }): Promise<Appointment | null>;
+}
+
+export interface AppointmentAvailabilityRepository {
+  listAvailableSlots(input: AppointmentAvailabilityQuery & { readonly tenantId: string }): Promise<readonly AppointmentAvailabilitySlot[]>;
 }

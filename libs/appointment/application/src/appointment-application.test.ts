@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import test from 'node:test';
-import { checkInAppointment, createAppointment, listAppointments, markAppointmentNoShow, type AppointmentApplicationDependencies } from './index.ts';
+import { checkInAppointment, createAppointment, getAppointmentAvailability, listAppointments, markAppointmentNoShow, type AppointmentApplicationDependencies } from './index.ts';
 import { createAuthenticatedRequestContext } from '../../../platform/context/src/index.ts';
 
 const tenantId = '11111111-1111-4111-8111-111111111111';
@@ -22,6 +22,7 @@ function deps(begin: 'STARTED' | 'REPLAY' = 'STARTED'): AppointmentApplicationDe
       async update() { return appointment; },
       async updateStatus() { return appointment; },
     },
+    availability: { async listAvailableSlots(input) { return input.tenantId === tenantId ? [] : []; } },
     idempotency: {
       async begin(input) { return { kind: begin, record: { ...input, status: 'SUCCEEDED' as const, responseCode: 201, responseReference: begin === 'REPLAY' ? appointment.id : null, createdAt: new Date(), expiresAt: new Date() } }; },
       async lookup() { throw new Error('not used'); },
@@ -45,6 +46,17 @@ test('replays an idempotent appointment instead of creating a duplicate', async 
 test('lists only appointments for the active tenant', async () => {
   const result = await listAppointments(deps(), context, { limit: 10 });
   assert.equal(result[0]?.tenantId, tenantId);
+});
+
+test('validates availability range before asking the scheduling provider', async () => {
+  await assert.rejects(
+    getAppointmentAvailability(deps(), context, {
+      doctorId: 'doctor-1',
+      from: '2026-09-05T10:00:00Z',
+      to: '2026-09-05T09:00:00Z',
+    }),
+    (error: unknown) => error instanceof Error && error.message === 'VALIDATION_ERROR',
+  );
 });
 
 test('requires a current version and valid lifecycle transition for check-in', async () => {

@@ -1,11 +1,12 @@
 import type {
+  AppointmentAvailabilityQuery,
   AppointmentCreateRequest,
   AppointmentListQuery,
   AppointmentPatchRequest,
 } from '../../contracts/src/index.ts';
 import type { Appointment } from '../../domain/src/index.ts';
 import { assertAppointmentStatusTransition, assertAppointmentTimeRange } from '../../domain/src/index.ts';
-import type { AppointmentRepository } from '../../data-access/src/index.ts';
+import type { AppointmentAvailabilityRepository, AppointmentRepository } from '../../data-access/src/index.ts';
 import type { RequestContext } from '../../../platform/context/src/index.ts';
 import { authorizeResourceAccess } from '../../../platform/authorization/src/index.ts';
 import { assertValidIdempotencyKey, hashPayload, type IdempotencyStore } from '../../../platform/idempotency/src/index.ts';
@@ -18,6 +19,7 @@ export interface AppointmentAuthorization {
 
 export interface AppointmentApplicationDependencies {
   readonly appointments: AppointmentRepository;
+  readonly availability: AppointmentAvailabilityRepository;
   readonly idempotency: IdempotencyStore;
   readonly authorization: AppointmentAuthorization;
 }
@@ -135,6 +137,16 @@ export async function listAppointments(deps: AppointmentApplicationDependencies,
   return deps.appointments.listByTenant({ ...input, ...limit(input), tenantId });
 }
 
+export async function getAppointmentAvailability(
+  deps: AppointmentApplicationDependencies,
+  context: RequestContext,
+  input: AppointmentAvailabilityQuery,
+) {
+  const tenantId = tenant(context);
+  authorize(deps, context, 'appointment.list', tenantId);
+  return deps.availability.listAvailableSlots({ ...availabilityRange(input), tenantId });
+}
+
 export async function updateAppointment(deps: AppointmentApplicationDependencies, context: RequestContext, appointmentId: string, input: AppointmentPatchRequest, version: string | undefined): Promise<Appointment> {
   const current = await getAppointment(deps, context, appointmentId);
   authorize(deps, context, 'appointment.update', current.tenantId, current);
@@ -153,6 +165,15 @@ export async function updateAppointment(deps: AppointmentApplicationDependencies
   const updated = await deps.appointments.update({ tenantId: current.tenantId, appointmentId, changes, expectedVersion });
   if (!updated) throw new AppointmentApplicationError('PRECONDITION_FAILED');
   return updated;
+}
+
+function availabilityRange(input: AppointmentAvailabilityQuery): AppointmentAvailabilityQuery & { readonly limit: number; readonly cursor?: string } {
+  const from = new Date(input.from);
+  const to = new Date(input.to);
+  if (!input.doctorId.trim() || !Number.isFinite(from.getTime()) || !Number.isFinite(to.getTime()) || from >= to) {
+    throw new AppointmentApplicationError('VALIDATION_ERROR');
+  }
+  return { ...input, ...limit(input) };
 }
 
 export async function transitionAppointment(
