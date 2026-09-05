@@ -177,11 +177,11 @@ export class PostgresAuditEventRepository implements AuditEventRepository {
     const existing = await this.database.query<AuditRow>(
       `SELECT id, tenant_id, actor_id, action, resource_type, resource_id,
               result, request_id, correlation_id, metadata, created_at
-         FROM audit_events WHERE id = $1`,
-      [event.id],
+         FROM audit_events WHERE id = $1 AND tenant_id = $2`,
+      [event.id, event.tenantId],
     );
     const existingEvent = existing.rows[0] && toAuditEvent(existing.rows[0]);
-    if (!existingEvent) throw new Error('audit event conflict could not be resolved');
+    if (!existingEvent) throw new AuditRepositoryInputError('audit event id is unavailable');
     return { kind: eventPayload(existingEvent) === eventPayload(event) ? 'REPLAY' : 'CONFLICT', event: existingEvent };
   }
 

@@ -168,6 +168,8 @@ test('PostgreSQL audit adapter uses parameterized SQL and preserves replay/confl
   assert.deepEqual(await repository.append({ ...tenantAEvent, action: 'PATIENT_PATCH' }), { kind: 'CONFLICT', event: tenantAEvent });
   assert.deepEqual(await repository.listByTenant({ tenantId: 'tenant-a', limit: 10 }), [tenantAEvent]);
   assert.equal(calls.filter((call) => call.text.includes('ON CONFLICT')).length, 3);
+  assert.match(calls[1]?.text ?? '', /WHERE id = \$1 AND tenant_id = \$2/);
+  assert.deepEqual(calls[1]?.values, ['audit-a', 'tenant-a']);
   assert.equal(calls.at(-1)?.values[0], 'tenant-a');
   assert.match(calls.at(-1)?.text ?? '', /ORDER BY created_at ASC, id ASC/);
 });
