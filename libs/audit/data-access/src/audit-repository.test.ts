@@ -7,6 +7,7 @@ import {
   encodeAuditCursor,
   type AuditAppendResult,
   type AuditEventRepository,
+  PostgresAuditEventRepository,
   validateAuditListInput,
 } from './index.ts';
 
@@ -141,4 +142,32 @@ test('repository validates list input defensively', () => {
     () => validateAuditListInput({ tenantId: 'tenant-a', limit: 101 }),
     AuditRepositoryInputError,
   );
+});
+
+const postgresRow = {
+  id: 'audit-a', tenant_id: 'tenant-a', actor_id: 'user-a', action: 'PATIENT_READ',
+  resource_type: 'patient', resource_id: 'patient-a', result: 'SUCCESS' as const,
+  request_id: 'request-a', correlation_id: 'correlation-a', metadata: {},
+  created_at: new Date('2026-09-04T00:00:00.000Z'),
+};
+
+test('PostgreSQL audit adapter uses parameterized SQL and preserves replay/conflict semantics', async () => {
+  const calls: Array<{ text: string; values: readonly unknown[] }> = [];
+  const database = {
+    async query(text: string, values: readonly unknown[] = []) {
+      calls.push({ text, values });
+      if (text.startsWith('INSERT')) return { rows: [] };
+      if (text.startsWith('SELECT') && text.includes('WHERE id')) return { rows: [postgresRow] };
+      return { rows: [postgresRow] };
+    },
+  };
+  const repository = new PostgresAuditEventRepository(database);
+
+  assert.deepEqual(await repository.append(tenantAEvent), { kind: 'REPLAY', event: tenantAEvent });
+  assert.deepEqual(await repository.append({ ...tenantAEvent, metadata: { z: true, a: 1 } }), { kind: 'CONFLICT', event: tenantAEvent });
+  assert.deepEqual(await repository.append({ ...tenantAEvent, action: 'PATIENT_PATCH' }), { kind: 'CONFLICT', event: tenantAEvent });
+  assert.deepEqual(await repository.listByTenant({ tenantId: 'tenant-a', limit: 10 }), [tenantAEvent]);
+  assert.equal(calls.filter((call) => call.text.includes('ON CONFLICT')).length, 3);
+  assert.equal(calls.at(-1)?.values[0], 'tenant-a');
+  assert.match(calls.at(-1)?.text ?? '', /ORDER BY created_at ASC, id ASC/);
 });
