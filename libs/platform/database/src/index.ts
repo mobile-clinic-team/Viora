@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { Pool } from 'pg';
 
 export interface QueryResult<Row extends Record<string, unknown> = Record<string, unknown>> {
   readonly rows: readonly Row[];
@@ -22,6 +23,18 @@ export interface MigrationDefinition {
 export interface AppliedMigration {
   readonly version: string;
   readonly checksum: string;
+}
+
+export interface PostgresMigrationDatabase extends MigrationDatabase {
+  readonly close: () => Promise<void>;
+}
+
+export function createPostgresMigrationDatabase(connectionString: string): PostgresMigrationDatabase {
+  const pool = new Pool({ connectionString });
+  return {
+    query: (sql, values) => pool.query(sql, values).then((result) => ({ rows: result.rows })),
+    close: () => pool.end(),
+  };
 }
 
 const MIGRATION_LOCK_KEY = 830021;
