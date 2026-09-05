@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { PostgresAuditEventRepository } from '../../../audit/data-access/src/index.ts';
 import {
   createPostgresMigrationDatabase,
   loadMigrationFiles,
@@ -35,6 +36,45 @@ test('runs the complete migration chain on PostgreSQL', { skip: !connectionStrin
       'tenants',
       'users',
     ]);
+
+    const tenantId = '00000000-0000-0000-0000-000000000001';
+    const otherTenantId = '00000000-0000-0000-0000-000000000002';
+    const actorId = '00000000-0000-0000-0000-000000000011';
+    const eventId = '00000000-0000-0000-0000-000000000021';
+    await database.query(
+      `INSERT INTO tenants (id, name, status, created_at, updated_at)
+       VALUES ($1, 'Integration tenant', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+              ($2, 'Other tenant', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+      [tenantId, otherTenantId],
+    );
+    await database.query(
+      `INSERT INTO users (id, email, status, created_at, updated_at)
+       VALUES ($1, 'audit-integration@example.test', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+      [actorId],
+    );
+
+    const repository = new PostgresAuditEventRepository(database);
+    const event = {
+      id: eventId,
+      tenantId,
+      actorId,
+      action: 'PATIENT_READ',
+      resourceType: 'patient',
+      resourceId: 'patient-1',
+      result: 'SUCCESS' as const,
+      requestId: 'request-1',
+      correlationId: 'correlation-1',
+      metadata: { source: 'integration' },
+      createdAt: '2026-09-05T00:00:00.000Z',
+    };
+    assert.deepEqual((await repository.append(event)).kind, 'APPENDED');
+    assert.deepEqual((await repository.append(event)).kind, 'REPLAY');
+    assert.deepEqual((await repository.append({ ...event, action: 'PATIENT_PATCH' })).kind, 'CONFLICT');
+    assert.deepEqual(await repository.listByTenant({ tenantId, limit: 10 }), [event]);
+    await assert.rejects(
+      repository.append({ ...event, tenantId: otherTenantId }),
+      /audit event id is unavailable/,
+    );
   } finally {
     await database.close();
   }
