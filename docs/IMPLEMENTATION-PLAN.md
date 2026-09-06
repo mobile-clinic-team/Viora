@@ -542,7 +542,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | CLIN-002 | Implement review/finalize/amendment immutability workflow | 4 | B | CLIN-001, `IN_REVIEW` lifecycle contract | COMPLETED — REVIEW/FINALIZE/AMENDMENT SLICE MERGED TO MAIN |
 | AUD-001 | Implement audit event contract and feature integration | 2-4 | A/all | AUTH-001, migrations 001-005 | COMPLETED — CONTRACT, MIGRATIONS, POSTGRES INTEGRATION, AND RAW SQL ADAPTER MERGED (PR #70) |
 | PLAT-001 | Implement idempotency and outbox shared contracts/schema integration | 2-4 | A/all | AUTH-001, migrations 004/008 | COMPLETED — CONTRACTS MERGED TO MAIN |
-| AI-001 | Implement AI Gateway/tool contract boundary | 5 | D | AUTH-002, AUD-001, AI decisions | BLOCKED |
+| AI-001 | Implement AI Gateway/tool contract boundary | 5 | D | AUTH-002, AUD-001, AI decisions | IN PROGRESS — CONTRACTS/GATEWAY SECURITY SLICE |
 | RAG-001 | Implement approved retrieval abstraction and isolation tests | 5-6 | D | AI-001, embedding/governance decisions | BLOCKED |
 | AI-002 | Implement read-only Patient/Clinical tools | 6 | D/B | AI-001, PAT-002, CLIN-001 | BLOCKED |
 | AI-003 | Implement clinical draft and human approval workflow | 6 | D/B | AI-002, CLIN-002, approved AI-007 workflow, approved AI-006 escalation policy | READY AFTER DEPENDENCIES |
