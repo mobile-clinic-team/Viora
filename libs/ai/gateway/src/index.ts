@@ -85,17 +85,18 @@ export class DefaultAiGateway implements AiGateway {
           resourceId: request.resource.resourceId,
           tenantId: request.resource.tenantId,
         },
-        policy: definition.authorize
+          policy: definition.authorize
           ? ({ context: requestContext, resource }) => definition.authorize!({
               context: requestContext,
               resource: { ...request.resource!, ...resource },
+              toolInput: request.input,
             })
           : undefined,
       });
       if (!decision.allowed) return deny('UNAUTHORIZED');
     } else if (definition.authorize) {
       try {
-        if (!definition.authorize({ context })) return deny('UNAUTHORIZED');
+        if (!definition.authorize({ context, toolInput: request.input })) return deny('UNAUTHORIZED');
       } catch {
         return deny('UNAUTHORIZED');
       }
