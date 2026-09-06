@@ -22,7 +22,7 @@ export interface AiToolDefinition<Input = unknown, Output = unknown> {
   readonly maxOutputBytes: number;
   readonly validateInput: (input: unknown) => input is Input;
   readonly execute: (input: Input, context: RequestContext) => Promise<Output>;
-  readonly authorize?: (input: { readonly context: RequestContext; readonly resource?: AiToolResource }) => boolean;
+  readonly authorize?: (input: { readonly context: RequestContext; readonly resource?: AiToolResource; readonly toolInput: Input }) => boolean;
 }
 
 export interface AiToolResult<Output = unknown> {

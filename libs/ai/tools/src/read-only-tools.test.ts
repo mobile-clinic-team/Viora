@@ -45,3 +45,8 @@ test('read-only tools reject malformed or excessive input', () => {
   assert.equal(patientTool.validateInput({ patientId: 'x', extra: true }), false);
   assert.equal(encounterTool.validateInput({ patientId: 'x', limit: 21 }), false);
 });
+
+test('resource authorization matches the requested patient', () => {
+  const tool = createReadOnlyPatientTool(loaders());
+  assert.equal(tool.authorize?.({ context, toolInput: { patientId: 'patient-a' }, resource: { resourceId: 'patient-b', tenantId: 'tenant-a', resourceType: 'patient' } }), false);
+});

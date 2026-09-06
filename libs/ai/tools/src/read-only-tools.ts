@@ -76,7 +76,7 @@ export function createReadOnlyPatientTool(loaders: ReadOnlyToolLoaders): AiToolD
     requiresHumanApproval: false,
     maxOutputBytes: 6_000,
     validateInput: isPatientInput,
-    authorize: ({ context, resource }) => !resource || (resource.resourceType === 'patient' && validId(resource.resourceId) && resource.tenantId === context.tenant?.tenantId),
+    authorize: ({ context, resource, toolInput }) => !resource || (resource.resourceType === 'patient' && validId(resource.resourceId) && resource.tenantId === context.tenant?.tenantId && isPatientInput(toolInput) && resource.resourceId === toolInput.patientId.trim()),
     execute: async (input, context) => patientOutput(await loaders.getPatient({ context, patientId: input.patientId.trim() })),
   };
 }
@@ -89,7 +89,7 @@ export function createReadOnlyRecentEncountersTool(loaders: ReadOnlyToolLoaders)
     requiresHumanApproval: false,
     maxOutputBytes: 12_000,
     validateInput: isEncounterInput,
-    authorize: ({ context, resource }) => !resource || (resource.resourceType === 'patient' && validId(resource.resourceId) && resource.tenantId === context.tenant?.tenantId),
+    authorize: ({ context, resource, toolInput }) => !resource || (resource.resourceType === 'patient' && validId(resource.resourceId) && resource.tenantId === context.tenant?.tenantId && isEncounterInput(toolInput) && resource.resourceId === toolInput.patientId.trim()),
     execute: async (input, context) => {
       const limit = input.limit ?? MAX_ENCOUNTERS;
       const encounters = await loaders.listEncounters({ context, patientId: input.patientId.trim(), limit });
