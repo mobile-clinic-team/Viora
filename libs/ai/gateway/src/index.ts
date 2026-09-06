@@ -14,12 +14,15 @@ export interface AiAuditRecorder {
 
 function isAuthenticated(context: RequestContext): boolean {
   return Boolean(
-    context?.actor?.userId.trim() &&
-    context.actor.subject.trim() &&
-    context.tenant?.tenantId.trim() &&
-    context.tenant.membershipId.trim() &&
-    context.requestId.trim() &&
-    context.correlationId.trim(),
+    context &&
+    typeof context.requestId === 'string' && context.requestId.trim() &&
+    typeof context.correlationId === 'string' && context.correlationId.trim() &&
+    context.actor &&
+    typeof context.actor.userId === 'string' && context.actor.userId.trim() &&
+    typeof context.actor.subject === 'string' && context.actor.subject.trim() &&
+    context.tenant &&
+    typeof context.tenant.tenantId === 'string' && context.tenant.tenantId.trim() &&
+    typeof context.tenant.membershipId === 'string' && context.tenant.membershipId.trim(),
   );
 }
 
@@ -68,7 +71,11 @@ export class DefaultAiGateway implements AiGateway {
     if (!Number.isInteger(definition.maxOutputBytes) || definition.maxOutputBytes < 1) {
       return deny('OUTPUT_REJECTED');
     }
-    if (!definition.validateInput(request.input)) return deny('INVALID_INPUT');
+    try {
+      if (!definition.validateInput(request.input)) return deny('INVALID_INPUT');
+    } catch {
+      return deny('INVALID_INPUT');
+    }
 
     if (request.resource) {
       const decision = authorizeResourceAccess({
@@ -86,8 +93,12 @@ export class DefaultAiGateway implements AiGateway {
           : undefined,
       });
       if (!decision.allowed) return deny('UNAUTHORIZED');
-    } else if (definition.authorize && !definition.authorize({ context })) {
-      return deny('UNAUTHORIZED');
+    } else if (definition.authorize) {
+      try {
+        if (!definition.authorize({ context })) return deny('UNAUTHORIZED');
+      } catch {
+        return deny('UNAUTHORIZED');
+      }
     }
 
     if (definition.requiresHumanApproval && definition.access !== 'READ') {

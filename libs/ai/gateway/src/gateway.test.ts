@@ -30,6 +30,14 @@ test('AI gateway fails closed without authenticated context', async () => {
   });
 });
 
+test('AI gateway fails closed for malformed runtime context without throwing', async () => {
+  const { gateway } = makeGateway();
+  const malformed = { ...context, actor: { userId: 42, subject: 'subject-a' } } as unknown as typeof context;
+  await assert.doesNotReject(async () => {
+    assert.equal((await gateway.invokeTool({ toolName: 'read_test', input: { value: 'x' } }, malformed)).reason, 'INVALID_CONTEXT');
+  });
+});
+
 test('AI gateway denies unknown tools and invalid input', async () => {
   const { gateway } = makeGateway();
   assert.equal((await gateway.invokeTool({ toolName: 'unknown', input: {} }, context)).reason, 'UNKNOWN_TOOL');
@@ -58,4 +66,15 @@ test('AI gateway rejects output exceeding the configured bound', async () => {
   };
   const { gateway } = makeGateway([largeTool]);
   assert.equal((await gateway.invokeTool({ toolName: 'large_test', input: null }, context)).reason, 'OUTPUT_REJECTED');
+});
+
+test('AI gateway fails closed when input validation or authorization throws', async () => {
+  const throwingTool: AiToolDefinition = {
+    ...readTool,
+    name: 'throwing_test',
+    validateInput: () => { throw new Error('untrusted validator'); },
+    authorize: () => { throw new Error('untrusted policy'); },
+  };
+  const { gateway } = makeGateway([throwingTool]);
+  assert.equal((await gateway.invokeTool({ toolName: 'throwing_test', input: { value: 'x' } }, context)).reason, 'INVALID_INPUT');
 });
