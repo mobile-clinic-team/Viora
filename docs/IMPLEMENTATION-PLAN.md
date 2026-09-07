@@ -232,19 +232,20 @@ Skip steps only when genuinely inapplicable; record the reason in the task.
 | 003 | Identity | `users`, `memberships` | 002 | A | Authentication/membership access |
 | 004 | Shared platform | `idempotency_keys` | 002, 003 | A | Retry identity, actor/tenant scope |
 | 005 | Audit | `audit_events` | 002, 003 | A | Sensitive-event evidence |
-| 006 | Patient | `patients` | 002, 003 as applicable | B | PHI and tenant scope |
-| 007 | Doctor | `departments`, `doctors`, `doctor_working_shifts` | 002, 003 | C | Provider/location relationships |
-| 008 | Shared platform | `outbox_events` | 002, 003 | A | Reliable post-commit events |
+| 006 | Shared platform | `outbox_events` | 002, 003 | A | Reliable post-commit events |
+| 007 | Patient | `patients` | 002, 003 | B | PHI and tenant scope |
+| 008 | Doctor | `departments`, `doctors`, `doctor_working_shifts` | 002, 003 | C | Provider/location relationships |
 | 009 | Appointment | `appointments` | 006, 007, 008 | C | Double booking/concurrency |
-| 010 | Clinical | `encounters`, `medical_records`, `medical_record_versions`, `patient_allergies` | 006, 007, 009 | B | Immutable history/PHI |
-| 011 | AI | `ai_conversations`, `ai_messages`, `ai_drafts`, `knowledge_documents`, `knowledge_chunks` | 002, 006, 010 | D | Retention/RAG governance |
+| 010 | Clinical | `encounters`, `medical_records`, `medical_record_versions`, `patient_allergies` | 007, 008, 009 | B | Immutable history/PHI |
+| 011 | AI | `ai_conversations`, `ai_messages`, `ai_drafts`, `knowledge_documents`, `knowledge_chunks` | 002, 007, 010 | D | Retention/RAG governance |
 | 012 | Files | `clinical_files` | 006, 010 | B | Post-MVP and private storage |
 | 013 | Billing | `invoices`, `payment_webhook_events` | 002, 006, 009 | C | Post-MVP/payment integrity |
 | 014 | Constraints/indexes | Approved indexes and constraints | Prior migrations/ERD | A + affected owners | Performance and migration safety |
 
-The order is conceptual and may change only after final ERD/decisions. No
-migration is created by this plan. Cross-domain foreign-key or constraint
-changes require affected-owner review.
+The reconciled order above is the implementation order for migrations 006–010:
+the outbox boundary is established before domain mutations can publish
+post-commit events. Cross-domain foreign-key or constraint changes require
+affected-owner review.
 
 ## 12. API Implementation Plan
 

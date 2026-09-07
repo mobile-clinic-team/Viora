@@ -21,18 +21,30 @@ test('runs the complete migration chain on PostgreSQL', { skip: !connectionStrin
     const migrations = await loadMigrationFiles(migrationDirectory);
     const applied = await runMigrations(database, migrations);
 
-    assert.deepEqual(applied.map(({ version }) => version), ['001', '002', '003', '004', '005']);
+    assert.deepEqual(applied.map(({ version }) => version), ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010']);
     const tables = await database.query<{ table_name: string }>(
       `SELECT table_name FROM information_schema.tables
        WHERE table_schema = 'public'
-       AND table_name IN ('tenants', 'locations', 'users', 'memberships', 'idempotency_keys', 'audit_events')
+       AND table_name IN ('tenants', 'locations', 'users', 'memberships', 'idempotency_keys', 'audit_events',
+                          'outbox_events', 'patients', 'departments', 'doctors', 'doctor_working_shifts',
+                          'appointments', 'encounters', 'medical_records', 'medical_record_versions', 'patient_allergies')
        ORDER BY table_name`,
     );
     assert.deepEqual(tables.rows.map(({ table_name }) => table_name), [
+      'appointments',
       'audit_events',
+      'departments',
+      'doctor_working_shifts',
+      'doctors',
+      'encounters',
       'idempotency_keys',
       'locations',
+      'medical_record_versions',
+      'medical_records',
       'memberships',
+      'outbox_events',
+      'patient_allergies',
+      'patients',
       'tenants',
       'users',
     ]);
