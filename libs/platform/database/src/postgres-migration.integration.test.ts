@@ -3,7 +3,13 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { PostgresAuditEventRepository } from '../../../audit/data-access/src/index.ts';
-import { PostgresAiDraftRepository } from '../../../ai/data-access/src/index.ts';
+import {
+  PostgresAiConversationRepository,
+  PostgresAiDraftRepository,
+  PostgresAiMessageRepository,
+  PostgresKnowledgeChunkRepository,
+  PostgresKnowledgeDocumentRepository,
+} from '../../../ai/data-access/src/index.ts';
 import {
   createPostgresMigrationDatabase,
   loadMigrationFiles,
@@ -22,7 +28,7 @@ test('runs the complete migration chain on PostgreSQL', { skip: !connectionStrin
     const migrations = await loadMigrationFiles(migrationDirectory);
     const applied = await runMigrations(database, migrations);
 
-    assert.deepEqual(applied.map(({ version }) => version), ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011']);
+    assert.deepEqual(applied.map(({ version }) => version), ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012']);
     const tables = await database.query<{ table_name: string }>(
       `SELECT table_name FROM information_schema.tables
        WHERE table_schema = 'public'
@@ -135,6 +141,20 @@ test('runs the complete migration chain on PostgreSQL', { skip: !connectionStrin
       to: 'APPROVED', actorId, at: '2026-09-07T00:02:00.000Z',
     }), null);
     assert.equal(await drafts.findById({ tenantId: otherTenantId, draftId: createdDraft.id }), null);
+
+    const conversations = new PostgresAiConversationRepository(database);
+    const conversation = await conversations.create({ tenantId, userId: actorId, patientId: null, contextType: null, contextId: null, status: 'ACTIVE' });
+    const messages = new PostgresAiMessageRepository(database);
+    await messages.append({ tenantId, conversationId: conversation.id, role: 'USER', contentReference: 'ref://message-1' });
+    assert.equal((await messages.listByConversation({ tenantId, conversationId: conversation.id, limit: 10 })).length, 1);
+
+    const documents = new PostgresKnowledgeDocumentRepository(database);
+    const document = await documents.create({ tenantId, title: 'Approved test document', source: 'integration', documentType: 'GUIDANCE', status: 'APPROVED' });
+    const chunks = new PostgresKnowledgeChunkRepository(database);
+    const embedding = Array.from({ length: 1536 }, () => 0);
+    await chunks.append({ tenantId, documentId: document.id, content: 'approved tenant knowledge', embedding, metadata: { source: 'test' } });
+    assert.equal((await chunks.searchByEmbedding({ tenantId, embedding, limit: 10 })).length, 1);
+    assert.equal((await chunks.searchByEmbedding({ tenantId: otherTenantId, embedding, limit: 10 })).length, 0);
   } finally {
     await database.close();
   }

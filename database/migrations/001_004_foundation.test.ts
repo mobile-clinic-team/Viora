@@ -42,12 +42,15 @@ test('domain migrations preserve the approved dependency and immutability bounda
   const appointments = await migration('009_appointments.sql');
   const clinical = await migration('010_clinical.sql');
   const ai = await migration('011_ai.sql');
+  const aiScope = await migration('012_ai_tenant_scope.sql');
 
   for (const sql of [outbox, patients, doctor, appointments, clinical, ai]) {
     assert.doesNotMatch(sql, /\bBEGIN;/);
     assert.doesNotMatch(sql, /\bCOMMIT;/);
     assert.match(sql, /ON DELETE RESTRICT/);
   }
+  assert.doesNotMatch(aiScope, /\bBEGIN;/);
+  assert.doesNotMatch(aiScope, /\bCOMMIT;/);
   assert.match(outbox, /outbox_status AS ENUM \('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED'\)/);
   assert.match(appointments, /EXCLUDE USING gist/);
   assert.match(clinical, /BEFORE UPDATE OR DELETE OR TRUNCATE ON medical_record_versions/);
@@ -57,4 +60,6 @@ test('domain migrations preserve the approved dependency and immutability bounda
   assert.match(ai, /CREATE EXTENSION IF NOT EXISTS vector/);
   assert.match(ai, /embedding vector\(1536\)/);
   assert.match(ai, /ai_draft_status AS ENUM/);
+  assert.match(aiScope, /knowledge_documents[\s\S]*ALTER COLUMN tenant_id SET NOT NULL/);
+  assert.match(aiScope, /knowledge_chunks[\s\S]*ALTER COLUMN tenant_id SET NOT NULL/);
 });
