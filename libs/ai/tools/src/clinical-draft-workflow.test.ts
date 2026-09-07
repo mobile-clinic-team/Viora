@@ -9,11 +9,12 @@ const base = { tenantId: 'tenant-a', patientId: 'patient-a', encounterId: 'encou
 function repository(): { repo: AiDraftRepository; get: () => AiDraft | null } {
   let current: AiDraft | null = null;
   const repo: AiDraftRepository = {
-    async create(input) { current = { ...input, id: 'draft-a', createdAt: input.createdAt, updatedAt: input.updatedAt }; return current; },
+    async create(input) { current = { ...input, id: 'draft-a', version: 1n, createdAt: input.createdAt, updatedAt: input.updatedAt }; return current; },
     async findById(input) { return current?.tenantId === input.tenantId && current.id === input.draftId ? current : null; },
     async transition(input) {
       if (!current || current.status !== input.from) return null;
-      current = { ...current, status: input.to, updatedAt: input.at, ...(input.to === 'APPROVED' ? { approvedBy: input.actorId, approvedAt: input.at } : {}), ...(input.to === 'REJECTED' ? { rejectedBy: input.actorId, rejectedAt: input.at } : {}) };
+      if (current.version !== input.expectedVersion) return null;
+      current = { ...current, version: current.version + 1n, status: input.to, updatedAt: input.at, ...(input.to === 'APPROVED' ? { approvedBy: input.actorId, approvedAt: input.at } : {}), ...(input.to === 'REJECTED' ? { rejectedBy: input.actorId, rejectedAt: input.at } : {}) };
       return current;
     },
   };
@@ -41,4 +42,14 @@ test('AI draft workflow rejects approval before human review and supports reject
   await assert.rejects(approveAiDraft(deps(repo), context, created.id), (error: unknown) => (error as { code?: string }).code === 'INVALID_TRANSITION');
   await reviewAiDraft(deps(repo), context, created.id);
   assert.equal((await rejectAiDraft(deps(repo), context, created.id)).status, 'REJECTED');
+});
+
+test('AI actor cannot perform human approval transitions', async () => {
+  const { repo } = repository();
+  const aiContext = createAuthenticatedRequestContext({
+    requestId: 'r-ai', correlationId: 'c-ai', userId: 'ai-agent', subject: 'ai-subject',
+    tenantId: 'tenant-a', membershipId: 'm', actorKind: 'AI',
+  });
+  const created = await createAiDraft(deps(repo), context, base);
+  await assert.rejects(reviewAiDraft(deps(repo), aiContext, created.id), (error: unknown) => (error as { code?: string }).code === 'FORBIDDEN');
 });

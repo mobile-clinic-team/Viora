@@ -13,6 +13,7 @@ export interface AiDraft {
   readonly createdBy: string;
   readonly draftType: string;
   readonly content: ClinicalRecordCreateRequest;
+  readonly version: bigint;
   readonly status: AiDraftStatus;
   readonly approvedBy: string | null;
   readonly approvedAt: string | null;
@@ -29,6 +30,7 @@ export interface AiDraftRepository {
     readonly tenantId: string;
     readonly draftId: string;
     readonly from: AiDraftStatus;
+    readonly expectedVersion: bigint;
     readonly to: Exclude<AiDraftStatus, 'GENERATED' | 'EXPIRED'>;
     readonly actorId: string;
     readonly at: string;
@@ -51,6 +53,11 @@ export class AiDraftWorkflowError extends Error {
 function requireContext(context: RequestContext): { readonly tenantId: string; readonly actorId: string } {
   if (!context?.tenant?.tenantId.trim() || !context.actor?.userId.trim()) throw new AiDraftWorkflowError('FORBIDDEN');
   return { tenantId: context.tenant.tenantId, actorId: context.actor.userId };
+}
+
+function requireHumanContext(context: RequestContext): void {
+  requireContext(context);
+  if (context.actor?.kind !== 'HUMAN') throw new AiDraftWorkflowError('FORBIDDEN');
 }
 
 function authorize(
@@ -88,7 +95,7 @@ export interface AiDraftWorkflowDependencies {
 export async function createAiDraft(
   deps: AiDraftWorkflowDependencies,
   context: RequestContext,
-  input: Omit<AiDraft, 'id' | 'createdAt' | 'updatedAt' | 'status' | 'approvedBy' | 'approvedAt' | 'rejectedBy' | 'rejectedAt'>,
+  input: Omit<AiDraft, 'id' | 'createdAt' | 'updatedAt' | 'version' | 'status' | 'approvedBy' | 'approvedAt' | 'rejectedBy' | 'rejectedAt'>,
 ): Promise<AiDraft> {
   const { tenantId } = requireContext(context);
   if (input.tenantId !== tenantId || !input.patientId.trim() || !input.draftType.trim()) throw new AiDraftWorkflowError('VALIDATION_ERROR');
@@ -106,9 +113,10 @@ async function transition(
   action: AiDraftAction,
 ): Promise<AiDraft> {
   const draft = await findOrThrow(deps, context, draftId);
+  requireHumanContext(context);
   if (draft.status !== from) throw new AiDraftWorkflowError('INVALID_TRANSITION');
   authorize(deps, context, action, draft.tenantId, draft);
-  const updated = await deps.drafts.transition({ tenantId: draft.tenantId, draftId: draft.id, from, to, actorId: context.actor!.userId, at: deps.now?.() ?? new Date().toISOString() });
+  const updated = await deps.drafts.transition({ tenantId: draft.tenantId, draftId: draft.id, from, expectedVersion: draft.version, to, actorId: context.actor!.userId, at: deps.now?.() ?? new Date().toISOString() });
   if (!updated) throw new AiDraftWorkflowError('INVALID_TRANSITION');
   return updated;
 }
