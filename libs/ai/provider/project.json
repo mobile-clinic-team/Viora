@@ -1,0 +1,6 @@
+{
+  "name": "ai-provider",
+  "projectType": "library",
+  "sourceRoot": "libs/ai/provider",
+  "tags": ["boundary:ai-provider", "scope:ai", "type:adapter"]
+}
