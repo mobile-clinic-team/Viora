@@ -545,7 +545,7 @@ mutations/events, even though their feature work can be reviewed in parallel.
 | AI-001 | Implement AI Gateway/tool contract boundary | 5 | D | AUTH-002, AUD-001, AI decisions | IN PROGRESS — CONTRACTS/GATEWAY SECURITY SLICE |
 | RAG-001 | Implement approved retrieval abstraction and isolation tests | 5-6 | D | AI-001, embedding/governance decisions | IN PROGRESS — TENANT/STATUS/PERMISSION ISOLATION SLICE |
 | AI-002 | Implement read-only Patient/Clinical tools | 6 | D/B | AI-001, PAT-002, CLIN-001 | IN PROGRESS — PATIENT/ENCOUNTER READ-ONLY SLICE |
-| AI-003 | Implement clinical draft and human approval workflow | 6 | D/B | AI-002, CLIN-002, approved AI-007 workflow, approved AI-006 escalation policy | READY AFTER DEPENDENCIES |
+| AI-003 | Implement clinical draft and human approval workflow | 6 | D/B | AI-002, CLIN-002, approved AI-007 workflow, approved AI-006 escalation policy | IN PROGRESS — DRAFT-ONLY TOOL BOUNDARY |
 | INT-001 | Integrate end-to-end MVP workflow | 7 | All | Domain/API tasks | BLOCKED |
 | SEC-001 | Execute security/tenant/AI hardening suite | 8-9 | A/all | INT-001 | BLOCKED |
 | REL-001 | Complete reliability/recovery/release gate | 9-10 | All | SEC-001, RPO/RTO decisions | BLOCKED |
