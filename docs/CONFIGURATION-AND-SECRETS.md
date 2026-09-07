@@ -66,6 +66,14 @@ not print credentials, authorization headers, connection strings, or PHI.
 
 No test fixture is required solely to complete FOUND-002.
 
+The PostgreSQL migration integration suite resets `public`. It requires both
+`DATABASE_URL` targeting a verified disposable test instance and the explicit
+test-only acknowledgement `VIORA_DISPOSABLE_DATABASE=1`. Without the URL it
+skips; with a URL but without acknowledgement it fails before connecting.
+The flag does not verify isolation and must not be supplied to an application,
+shared development, staging, or production environment. See
+`database/migrations/README.md` for lifecycle and cleanup requirements.
+
 ## 4. CI Configuration
 
 CI may read GitHub Actions Secrets or Variables only when a check genuinely

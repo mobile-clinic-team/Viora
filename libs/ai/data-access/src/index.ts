@@ -262,7 +262,16 @@ export class PostgresKnowledgeChunkRepository implements KnowledgeChunkRepositor
   public async append(input: Omit<KnowledgeChunk, 'id' | 'createdAt'>): Promise<KnowledgeChunk> {
     const result = await this.database.query<ChunkRow>(`INSERT INTO knowledge_chunks (id, document_id, tenant_id, content, embedding, metadata, created_at) SELECT $1, d.id, d.tenant_id, $4, $5::vector, $6::jsonb, CURRENT_TIMESTAMP FROM knowledge_documents d WHERE d.id = $2 AND d.tenant_id = $3 RETURNING id, document_id, tenant_id, content, embedding, metadata, created_at`, [randomUUID(), input.documentId, input.tenantId, input.content, vector(input.embedding), JSON.stringify(input.metadata)]);
     if (!result.rows[0]) throw new AiRepositoryInputError('document is unavailable for tenant');
-    return { ...result.rows[0], embedding: input.embedding, createdAt: aiIso(result.rows[0].created_at) };
+    const row = result.rows[0];
+    return {
+      id: row.id,
+      documentId: row.document_id,
+      tenantId: row.tenant_id,
+      content: row.content,
+      embedding: input.embedding,
+      metadata: row.metadata,
+      createdAt: aiIso(row.created_at),
+    };
   }
   public async searchByEmbedding(input: { readonly tenantId: string; readonly embedding: readonly number[]; readonly limit: number }): Promise<readonly (KnowledgeChunk & { readonly documentId: string; readonly title: string; readonly source: string; readonly status: KnowledgeDocumentStatus; readonly distance: number })[]> {
     if (!Number.isInteger(input.limit) || input.limit < 1 || input.limit > 100) throw new AiRepositoryInputError('limit must be between 1 and 100');
