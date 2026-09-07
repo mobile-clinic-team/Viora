@@ -41,8 +41,9 @@ test('domain migrations preserve the approved dependency and immutability bounda
   const doctor = await migration('008_doctor.sql');
   const appointments = await migration('009_appointments.sql');
   const clinical = await migration('010_clinical.sql');
+  const ai = await migration('011_ai.sql');
 
-  for (const sql of [outbox, patients, doctor, appointments, clinical]) {
+  for (const sql of [outbox, patients, doctor, appointments, clinical, ai]) {
     assert.doesNotMatch(sql, /\bBEGIN;/);
     assert.doesNotMatch(sql, /\bCOMMIT;/);
     assert.match(sql, /ON DELETE RESTRICT/);
@@ -53,4 +54,7 @@ test('domain migrations preserve the approved dependency and immutability bounda
   assert.match(clinical, /medical_record_versions_immutable_trigger/);
   assert.match(clinical, /UNIQUE \(medical_record_id, version\)/);
   assert.match(patients, /UNIQUE \(tenant_id, medical_record_number\)/);
+  assert.match(ai, /CREATE EXTENSION IF NOT EXISTS vector/);
+  assert.match(ai, /embedding vector\(1536\)/);
+  assert.match(ai, /ai_draft_status AS ENUM/);
 });
