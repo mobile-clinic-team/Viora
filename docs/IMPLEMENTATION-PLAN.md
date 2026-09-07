@@ -554,6 +554,21 @@ mutations/events, even though their feature work can be reviewed in parallel.
 Each task is small enough for one focused Codex session after dependencies
 are complete. No Post-MVP task is included.
 
+### INT-001 persistence prerequisite repair — Issue #87
+
+Status: IN REVIEW — a bounded defect-repair slice, not complete MVP integration.
+Branch: `feature/INT-001-persistence-boundary-fixes`. Member D implements with
+Member A database/runtime review and Member B Clinical integration review.
+
+Scope: initialize the AI draft repository version at creation, correctly map
+knowledge-chunk database fields to the existing contract, preserve one
+PostgreSQL session for migration transactions/locks, and validate real workflow
+persistence plus migration upgrade/replay/rollback in a disposable database.
+No applied migration, public API, domain schema, human-approval policy, or
+production release decision changes. Full INT-001 stays BLOCKED pending the
+remaining domain/runtime/API composition and E2E work. Evidence and remaining
+gates: `docs/audits/INT-001-persistence-boundary-review.md`.
+
 ### AUTH-001 Scope Boundary
 
 AUTH-001 establishes provider-neutral identity and tenant-context contracts,

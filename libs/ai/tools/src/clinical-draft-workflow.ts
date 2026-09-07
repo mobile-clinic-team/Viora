@@ -100,8 +100,7 @@ export async function createAiDraft(
   const { tenantId } = requireContext(context);
   if (input.tenantId !== tenantId || !input.patientId.trim() || !input.draftType.trim()) throw new AiDraftWorkflowError('VALIDATION_ERROR');
   authorize(deps, context, 'draft.create', tenantId);
-  const now = deps.now?.() ?? new Date().toISOString();
-  return deps.drafts.create({ ...input, status: 'GENERATED', approvedBy: null, approvedAt: null, rejectedBy: null, rejectedAt: null, createdBy: context.actor!.userId, createdAt: now, updatedAt: now });
+  return deps.drafts.create({ ...input, version: 1n, status: 'GENERATED', approvedBy: null, approvedAt: null, rejectedBy: null, rejectedAt: null, createdBy: context.actor!.userId });
 }
 
 async function transition(

@@ -41,4 +41,5 @@ jobs:
       - name: Run TypeScript tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/viora_test
+          VIORA_DISPOSABLE_DATABASE: '1'
         run: npm test

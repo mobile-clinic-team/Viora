@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Pool } from 'pg';
+import { Client } from 'pg';
 
 export interface QueryResult<Row extends Record<string, unknown> = Record<string, unknown>> {
   readonly rows: readonly Row[];
@@ -30,10 +30,34 @@ export interface PostgresMigrationDatabase extends MigrationDatabase {
 }
 
 export function createPostgresMigrationDatabase(connectionString: string): PostgresMigrationDatabase {
-  const pool = new Pool({ connectionString });
+  // Transactions and advisory locks belong to a session, never a pool query.
+  // One adapter owns one session; callers must close it in finally.
+  const client = new Client({ connectionString });
+  let connection: Promise<void> | undefined;
+  let closing: Promise<void> | undefined;
+  let connectionError: Error | undefined;
+  client.on('error', (error: Error) => { connectionError = error; });
   return {
-    query: (sql, values) => pool.query(sql, values).then((result) => ({ rows: result.rows })),
-    close: () => pool.end(),
+    query: async <Row extends Record<string, unknown> = Record<string, unknown>>(
+      sql: string,
+      values?: readonly unknown[],
+    ): Promise<QueryResult<Row>> => {
+      if (closing) throw new Error('migration database is closed');
+      if (connectionError) throw connectionError;
+      connection ??= client.connect().then(() => {});
+      await connection;
+      if (closing) throw new Error('migration database is closed');
+      const result = await client.query<Row>(sql, values === undefined ? undefined : [...values]);
+      return { rows: result.rows };
+    },
+    close: () => {
+      closing ??= (async () => {
+        // A failed connect still needs cleanup; its error was returned by query.
+        try { await connection; } catch { /* Close the failed client below. */ }
+        await client.end();
+      })();
+      return closing;
+    },
   };
 }
 
