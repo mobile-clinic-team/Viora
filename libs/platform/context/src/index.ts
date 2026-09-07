@@ -4,6 +4,7 @@ export interface RequestContext {
   readonly actor: {
     readonly userId: string;
     readonly subject: string;
+    readonly kind: 'HUMAN' | 'AI';
   } | null;
   readonly tenant: {
     readonly tenantId: string;
@@ -28,13 +29,14 @@ export function createAuthenticatedRequestContext(input: {
   readonly correlationId: string;
   readonly userId: string;
   readonly subject: string;
+  readonly actorKind?: 'HUMAN' | 'AI';
   readonly tenantId: string;
   readonly membershipId: string;
 }): RequestContext {
   return {
     requestId: input.requestId,
     correlationId: input.correlationId,
-    actor: { userId: input.userId, subject: input.subject },
+    actor: { userId: input.userId, subject: input.subject, kind: input.actorKind ?? 'HUMAN' },
     tenant: {
       tenantId: input.tenantId,
       membershipId: input.membershipId,

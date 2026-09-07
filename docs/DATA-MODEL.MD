@@ -1694,12 +1694,15 @@ outbox_events
 -------------
 id
 tenant_id
+actor_id
+request_id
+correlation_id
 event_type
 aggregate_type
 aggregate_id
 payload
 status
-attempts
+attempt_count
 available_at
 created_at
 processed_at
@@ -1710,9 +1713,13 @@ Possible status:
 ```text
 PENDING
 PROCESSING
-PROCESSED
+COMPLETED
 FAILED
 ```
+
+`COMPLETED` is the canonical persisted terminal status used by the shared
+platform contract. “Processed” remains descriptive language for a completed
+event, not a separate enum value.
 
 Purpose:
 
@@ -1811,7 +1818,7 @@ Such decisions require an ADR.
 
 # 53. Database Migration Order
 
-Initial conceptual migration order:
+Implemented migration order for the current foundation:
 
 ```text
 001_extensions (btree_gist)
@@ -1829,13 +1836,13 @@ Initial conceptual migration order:
 005_audit
       │
       ▼
-006_patients
+006_outbox
       │
       ▼
-007_doctor
+007_patients
       │
       ▼
-008_outbox
+008_doctor
       │
       ▼
 009_appointments

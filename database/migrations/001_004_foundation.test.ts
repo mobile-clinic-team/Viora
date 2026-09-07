@@ -34,3 +34,27 @@ test('foundation status and idempotency contracts match the application contract
   assert.match(idempotency, /request_hash VARCHAR\(64\) NOT NULL/);
   assert.match(idempotency, /response_reference TEXT/);
 });
+
+test('domain migrations preserve the approved dependency and immutability boundaries', async () => {
+  const outbox = await migration('006_outbox_events.sql');
+  const patients = await migration('007_patients.sql');
+  const doctor = await migration('008_doctor.sql');
+  const appointments = await migration('009_appointments.sql');
+  const clinical = await migration('010_clinical.sql');
+  const ai = await migration('011_ai.sql');
+
+  for (const sql of [outbox, patients, doctor, appointments, clinical, ai]) {
+    assert.doesNotMatch(sql, /\bBEGIN;/);
+    assert.doesNotMatch(sql, /\bCOMMIT;/);
+    assert.match(sql, /ON DELETE RESTRICT/);
+  }
+  assert.match(outbox, /outbox_status AS ENUM \('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED'\)/);
+  assert.match(appointments, /EXCLUDE USING gist/);
+  assert.match(clinical, /BEFORE UPDATE OR DELETE OR TRUNCATE ON medical_record_versions/);
+  assert.match(clinical, /medical_record_versions_immutable_trigger/);
+  assert.match(clinical, /UNIQUE \(medical_record_id, version\)/);
+  assert.match(patients, /UNIQUE \(tenant_id, medical_record_number\)/);
+  assert.match(ai, /CREATE EXTENSION IF NOT EXISTS vector/);
+  assert.match(ai, /embedding vector\(1536\)/);
+  assert.match(ai, /ai_draft_status AS ENUM/);
+});
